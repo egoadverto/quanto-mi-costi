@@ -42,6 +42,13 @@ type Spesa = {
 const categorieSpesa = ['assicurazione','bollo','manutenzione','tagliando','gomme','revisione','accessori','parcheggio','pedaggi','lavaggio','altro'];
 
 const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' });
+const initialVForm = { nome: '', marca: '', modello: '', tipo_veicolo: 'auto', tipo_energia: 'benzina', unita_default: 'L', odometro_iniziale: '0', note: '' };
+const initialRForm = { veicolo_id: '', data: '', odometro: '', quantita: '', unita: 'L', prezzo_unitario: '', costo_totale: '', fornitore: '', note: '' };
+const initialSForm = { veicolo_id: '', data: '', categoria: 'manutenzione', descrizione: '', importo: '', odometro: '', note: '' };
+
+const sortByOdometer = (items: Rifornimento[]) => [...items].sort((a, b) => a.odometro - b.odometro);
+const sumRifornimenti = (items: Rifornimento[]) => items.reduce((acc, item) => acc + item.costo_totale, 0);
+const sumSpese = (items: Spesa[]) => items.reduce((acc, item) => acc + item.importo, 0);
 
 function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -52,9 +59,9 @@ function App() {
   const [rifornimenti, setRifornimenti] = useState<Rifornimento[]>([]);
   const [spese, setSpese] = useState<Spesa[]>([]);
 
-  const [vForm, setVForm] = useState({ nome: '', marca: '', modello: '', tipo_veicolo: 'auto', tipo_energia: 'benzina', unita_default: 'L', odometro_iniziale: '0', note: '' });
-  const [rForm, setRForm] = useState({ veicolo_id: '', data: '', odometro: '', quantita: '', unita: 'L', prezzo_unitario: '', costo_totale: '', fornitore: '', note: '' });
-  const [sForm, setSForm] = useState({ veicolo_id: '', data: '', categoria: 'manutenzione', descrizione: '', importo: '', odometro: '', note: '' });
+  const [vForm, setVForm] = useState(initialVForm);
+  const [rForm, setRForm] = useState(initialRForm);
+  const [sForm, setSForm] = useState(initialSForm);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -96,7 +103,7 @@ function App() {
     if (Number.isNaN(Number(vForm.odometro_iniziale))) return setError('Odometro non valido');
     const { error: insertError } = await supabase.from('veicoli').insert([{ ...vForm, user_id: session?.user.id, odometro_iniziale: Number(vForm.odometro_iniziale) }]);
     if (insertError) return setError(insertError.message);
-    setVForm({ nome: '', marca: '', modello: '', tipo_veicolo: 'auto', tipo_energia: 'benzina', unita_default: 'L', odometro_iniziale: '0', note: '' });
+    setVForm(initialVForm);
     await loadData();
   }
 
@@ -107,7 +114,7 @@ function App() {
     if (Number.isNaN(Number(rForm.odometro))) return setError('Odometro non valido');
     const { error: insertError } = await supabase.from('rifornimenti').insert([{ ...rForm, user_id: session?.user.id, odometro: Number(rForm.odometro), quantita: Number(rForm.quantita), prezzo_unitario: Number(rForm.prezzo_unitario), costo_totale: Number(rForm.costo_totale) }]);
     if (insertError) return setError(insertError.message);
-    setRForm({ veicolo_id: '', data: '', odometro: '', quantita: '', unita: 'L', prezzo_unitario: '', costo_totale: '', fornitore: '', note: '' });
+    setRForm(initialRForm);
     await loadData();
   }
 
@@ -118,7 +125,7 @@ function App() {
     if (odometro !== null && Number.isNaN(odometro)) return setError('Odometro non valido');
     const { error: insertError } = await supabase.from('spese').insert([{ ...sForm, user_id: session?.user.id, importo: Number(sForm.importo), odometro }]);
     if (insertError) return setError(insertError.message);
-    setSForm({ veicolo_id: '', data: '', categoria: 'manutenzione', descrizione: '', importo: '', odometro: '', note: '' });
+    setSForm(initialSForm);
     await loadData();
   }
 
@@ -175,19 +182,19 @@ function App() {
     const anno = new Date().getFullYear();
     const rAnno = rifornimenti.filter((r) => new Date(r.data).getFullYear() === anno);
     const sAnno = spese.filter((s) => new Date(s.data).getFullYear() === anno);
-    const totaleAnno = rAnno.reduce((acc, r) => acc + r.costo_totale, 0) + sAnno.reduce((acc, s) => acc + s.importo, 0);
+    const totaleAnno = sumRifornimenti(rAnno) + sumSpese(sAnno);
     const mesi = new Date().getMonth() + 1;
     const costoMedioMensile = mesi > 0 ? totaleAnno / mesi : 0;
 
     const kmGlobali = veicoli.reduce((acc, v) => {
-      const list = rifornimenti.filter((r) => r.veicolo_id === v.id).sort((a, b) => a.odometro - b.odometro);
+      const list = sortByOdometer(rifornimenti.filter((r) => r.veicolo_id === v.id));
       if (list.length < 2) return acc;
       return acc + (list[list.length - 1].odometro - list[0].odometro);
     }, 0);
     const costoKm = kmGlobali > 0 ? totaleAnno / kmGlobali : null;
 
     const efficienze = veicoli.map((v) => {
-      const list = rifornimenti.filter((r) => r.veicolo_id === v.id).sort((a, b) => a.odometro - b.odometro);
+      const list = sortByOdometer(rifornimenti.filter((r) => r.veicolo_id === v.id));
       if (list.length < 2) return { veicolo: v.nome, valore: null as number | null, unita: 'km/L', campioni: 0 };
       const valori: number[] = [];
       for (let i = 1; i < list.length; i += 1) {
@@ -203,8 +210,8 @@ function App() {
     const ultimoRifornimento = [...rifornimenti].sort((a, b) => b.data.localeCompare(a.data))[0] ?? null;
 
     const costoPerVeicolo = veicoli.map((v) => {
-      const cr = rifornimenti.filter((r) => r.veicolo_id === v.id).reduce((acc, r) => acc + r.costo_totale, 0);
-      const cs = spese.filter((s) => s.veicolo_id === v.id).reduce((acc, s) => acc + s.importo, 0);
+      const cr = sumRifornimenti(rifornimenti.filter((r) => r.veicolo_id === v.id));
+      const cs = sumSpese(spese.filter((s) => s.veicolo_id === v.id));
       return { nome: v.nome, totale: cr + cs };
     }).sort((a, b) => b.totale - a.totale)[0] ?? null;
 
