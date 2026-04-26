@@ -1,0 +1,112 @@
+.app-page {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+}
+
+.app-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+
+.app-input {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+}
+
+.app-button-primary {
+  background-color: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+.app-button-primary:hover {
+  background-color: var(--accent-strong);
+}
+
+.app-button-danger {
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.app-nav-link {
+  border: 1px solid var(--border);
+  background-color: var(--bg-card);
+  color: var(--text-secondary);
+}
+
+.app-nav-link-active {
+  background-color: var(--accent);
+  color: #000;
+}
+
+.panel-default {
+  @apply rounded-2xl shadow-sm;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+.panel-highlight {
+  @apply rounded-2xl shadow-sm;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+.field-default,
+.field-highlight {
+  @apply w-full text-sm focus:outline-none focus:ring-2;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.field-default:focus,
+.field-highlight:focus {
+  --tw-ring-color: color-mix(in oklab, var(--accent) 100%, transparent);
+}
+
+.btn-primary,
+.btn-brand {
+  @apply rounded-xl px-4 py-2 text-sm font-semibold;
+  background-color: var(--accent);
+  color: #000;
+}
+
+.btn-primary:hover,
+.btn-brand:hover {
+  background-color: var(--accent-strong);
+}
+
+.btn-secondary {
+  @apply rounded-xl border px-3 py-2 text-sm font-semibold;
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.btn-danger {
+  @apply rounded-xl border px-3 py-2 text-sm font-semibold;
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.stat-card {
+  @apply rounded-2xl p-4 shadow-sm;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+.stat-label {
+  @apply text-xs;
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  @apply text-lg font-semibold;
+  color: var(--text-primary);
+}
