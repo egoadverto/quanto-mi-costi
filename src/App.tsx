@@ -11,7 +11,7 @@ import { calculateDashboard, calculateReport, calculateRifornimentoForm, Riforni
 const categorieSpesa = ['assicurazione','bollo','manutenzione','tagliando','gomme','revisione','accessori','parcheggio','pedaggi','lavaggio','altro'];
 
 const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' });
-const initialVForm = { nome: '', marca: '', modello: '', tipo_veicolo: 'auto', tipo_energia: 'benzina', unita_default: 'L', odometro_iniziale: '0', note: '' };
+const initialVForm = { nome: '', marca: '', modello: '', tipo_veicolo: 'auto', tipo_energia: 'benzina', unita_default: 'L', odometro_iniziale: '0', data_acquisto: '', note: '' };
 const initialRForm = { veicolo_id: '', data: '', odometro: '', quantita: '', unita: 'L', prezzo_unitario: '', costo_totale: '', fornitore: '', note: '' };
 const initialSForm = { veicolo_id: '', data: '', categoria: 'manutenzione', descrizione: '', importo: '', odometro: '', note: '' };
 
@@ -29,6 +29,7 @@ function App() {
   const [spese, setSpese] = useState<Spesa[]>([]);
 
   const [vForm, setVForm] = useState(initialVForm);
+  const [editingVeicoloId, setEditingVeicoloId] = useState<string | null>(null);
   const [rForm, setRForm] = useState(initialRForm);
   const [sForm, setSForm] = useState(initialSForm);
 
@@ -64,13 +65,32 @@ function App() {
     await supabase.auth.signOut();
   }
 
-  async function addVeicolo(e: FormEvent) {
+  async function saveVeicolo(e: FormEvent) {
     e.preventDefault();
+    setError('');
     if (!vForm.nome.trim()) return setError('Nome veicolo obbligatorio');
     if (Number.isNaN(Number(vForm.odometro_iniziale))) return setError('Odometro non valido');
-    const { error: insertError } = await supabase.from('veicoli').insert([{ ...vForm, user_id: session?.user.id, odometro_iniziale: Number(vForm.odometro_iniziale) }]);
-    if (insertError) return setError(insertError.message);
+
+    const veicoloPayload = {
+      nome: vForm.nome.trim(),
+      marca: vForm.marca.trim() || null,
+      modello: vForm.modello.trim() || null,
+      tipo_veicolo: vForm.tipo_veicolo,
+      tipo_energia: vForm.tipo_energia,
+      unita_default: vForm.unita_default,
+      odometro_iniziale: Number(vForm.odometro_iniziale),
+      data_acquisto: vForm.data_acquisto || null,
+      note: vForm.note.trim() || null
+    };
+
+    const query = editingVeicoloId
+      ? supabase.from('veicoli').update(veicoloPayload).eq('id', editingVeicoloId)
+      : supabase.from('veicoli').insert([{ ...veicoloPayload, user_id: session?.user.id }]);
+    const { error: saveError } = await query;
+    if (saveError) return setError(saveError.message);
+
     setVForm(initialVForm);
+    setEditingVeicoloId(null);
     await loadData();
   }
 
@@ -101,11 +121,26 @@ function App() {
     await loadData();
   }
 
-  async function updateVeicoloNome(id: string, nomeAttuale: string) {
-    const nuovoNome = window.prompt('Nuovo nome veicolo', nomeAttuale);
-    if (!nuovoNome || !nuovoNome.trim()) return;
-    await supabase.from('veicoli').update({ nome: nuovoNome.trim() }).eq('id', id);
-    await loadData();
+  function startEditVeicolo(id: string) {
+    const veicolo = veicoli.find((v) => v.id === id);
+    if (!veicolo) return;
+    setEditingVeicoloId(id);
+    setVForm({
+      nome: veicolo.nome ?? '',
+      marca: veicolo.marca ?? '',
+      modello: veicolo.modello ?? '',
+      tipo_veicolo: veicolo.tipo_veicolo ?? 'auto',
+      tipo_energia: veicolo.tipo_energia ?? 'benzina',
+      unita_default: veicolo.unita_default ?? 'L',
+      odometro_iniziale: String(veicolo.odometro_iniziale ?? 0),
+      data_acquisto: veicolo.data_acquisto ?? '',
+      note: veicolo.note ?? ''
+    });
+  }
+
+  function cancelEditVeicolo() {
+    setEditingVeicoloId(null);
+    setVForm(initialVForm);
   }
 
   async function updateRifornimentoCosto(id: string, costoAttuale: number) {
@@ -205,10 +240,12 @@ function App() {
         <Veicoli
           veicoli={veicoli}
           form={vForm}
-          onSubmit={addVeicolo}
+          isEditing={Boolean(editingVeicoloId)}
+          onSubmit={saveVeicolo}
           onFormSet={setVForm}
+          onCancelEdit={cancelEditVeicolo}
           onDelete={async (id) => deleteItem('veicoli', id)}
-          onUpdateNome={updateVeicoloNome}
+          onEdit={startEditVeicolo}
         />
       </div>
     </main>
