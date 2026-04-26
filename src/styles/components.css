@@ -1,0 +1,91 @@
+.app-page {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+}
+
+.app-card,
+.panel-default,
+.panel-highlight,
+.stat-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+}
+
+.app-card {
+  padding: 1.25rem;
+}
+
+.panel-default,
+.panel-highlight,
+.stat-card {
+  @apply shadow-sm;
+}
+
+.app-input,
+.field-default,
+.field-highlight {
+  @apply w-full text-sm focus:outline-none focus:ring-2;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+}
+
+.app-input:focus,
+.field-default:focus,
+.field-highlight:focus {
+  --tw-ring-color: color-mix(in oklab, var(--accent) 100%, transparent);
+}
+
+.app-button-primary,
+.btn-primary,
+.btn-brand {
+  background-color: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+.app-button-primary:hover,
+.btn-primary:hover,
+.btn-brand:hover {
+  background-color: var(--accent-strong);
+}
+
+.app-button-danger,
+.btn-danger {
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.app-nav-link {
+  border: 1px solid var(--border);
+  background-color: var(--bg-card);
+  color: var(--text-secondary);
+}
+
+.app-nav-link-active {
+  background-color: var(--accent);
+  color: #000;
+}
+
+.btn-secondary {
+  @apply rounded-xl border px-3 py-2 text-sm font-semibold;
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.stat-card {
+  @apply p-4;
+}
+
+.stat-label {
+  @apply text-xs;
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  @apply text-lg font-semibold;
+  color: var(--text-primary);
+}
