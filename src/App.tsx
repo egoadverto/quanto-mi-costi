@@ -249,18 +249,18 @@ function App() {
 
   if (!session) {
     return (
-      <main className="min-h-screen bg-slate-50 text-[#12343b]">
+      <main className="min-h-screen bg-slate-50 text-slate-900">
         <div className="mx-auto max-w-6xl space-y-6 px-4 py-6">
           <header className="space-y-1">
-            <h1 className="text-3xl font-bold text-[#12343b]">Ma quanto mi costi?!</h1>
-            <p className="text-sm text-[#12343b]/70">Costi, rifornimenti e report dei tuoi veicoli</p>
+            <h1 className="text-3xl font-bold">Ma quanto mi costi?!</h1>
+            <p className="text-sm text-slate-600">Costi, rifornimenti e report dei tuoi veicoli</p>
           </header>
-          <section className="mx-auto w-full max-w-md rounded-2xl border border-[#c89666] bg-white p-5 shadow-sm">
-            <h2 className="mb-3 text-xl font-semibold text-[#12343b]">Accesso</h2>
+          <section className="mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 className="mb-3 text-xl font-semibold">Accesso</h2>
             <form onSubmit={login} className="space-y-3">
-              <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            <button className="w-full rounded-xl bg-[#2d545e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#12343b]" type="submit">Accedi</button>
+              <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <button className="w-full rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white" type="submit">Accedi</button>
             </form>
             {error && <p className="mt-3 rounded-xl border border-red-200 bg-red-50 p-2 text-sm text-red-700">{error}</p>}
           </section>
@@ -305,19 +305,19 @@ function App() {
       </section>
 
       <section id="rifornimenti" className="space-y-3">
-        <h2 className="text-xl font-semibold text-[#12343b]">Rifornimenti</h2>
-        <div className="rounded-2xl border border-[#c89666] bg-white p-5 shadow-sm">
+        <h2 className="text-xl font-semibold">Rifornimenti</h2>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <form onSubmit={addRifornimento} className="grid gap-3 sm:grid-cols-2">
-            <select className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" value={rForm.veicolo_id} onChange={(e) => setRForm({ ...rForm, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
-            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="date" value={rForm.data} onChange={(e) => setRForm({ ...rForm, data: e.target.value })} required />
-            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="number" placeholder="Odometro" value={rForm.odometro} onChange={(e) => setRForm({ ...rForm, odometro: e.target.value })} required />
-            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="number" step="0.01" placeholder="Quantità" value={rForm.quantita} onChange={(e) => setRForm({ ...rForm, quantita: e.target.value })} required />
-            <select className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" value={rForm.unita} onChange={(e) => setRForm({ ...rForm, unita: e.target.value })}><option value="L">L</option><option value="kWh">kWh</option></select>
-            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="number" step="0.0001" placeholder="Prezzo unitario" value={rForm.prezzo_unitario} onChange={(e) => setRForm({ ...rForm, prezzo_unitario: e.target.value })} required />
-            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="number" step="0.01" placeholder="Costo totale" value={rForm.costo_totale} onChange={(e) => setRForm({ ...rForm, costo_totale: e.target.value })} required />
-            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" placeholder="Fornitore" value={rForm.fornitore} onChange={(e) => setRForm({ ...rForm, fornitore: e.target.value })} />
-            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382] sm:col-span-2" placeholder="Note" value={rForm.note} onChange={(e) => setRForm({ ...rForm, note: e.target.value })} />
-            <button className="rounded-xl bg-[#2d545e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#12343b] sm:col-span-2 sm:w-fit" type="submit">Salva rifornimento</button>
+            <select className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" value={rForm.veicolo_id} onChange={(e) => setRForm({ ...rForm, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
+            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="date" value={rForm.data} onChange={(e) => setRForm({ ...rForm, data: e.target.value })} required />
+            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="number" placeholder="Odometro" value={rForm.odometro} onChange={(e) => setRForm({ ...rForm, odometro: e.target.value })} required />
+            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="number" step="0.01" placeholder="Quantità" value={rForm.quantita} onChange={(e) => updateRForm('quantita', e.target.value)} required />
+            <select className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" value={rForm.unita} onChange={(e) => setRForm({ ...rForm, unita: e.target.value })}><option value="L">L</option><option value="kWh">kWh</option></select>
+            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="number" step="0.0001" placeholder="Prezzo unitario" value={rForm.prezzo_unitario} onChange={(e) => updateRForm('prezzo_unitario', e.target.value)} required />
+            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="number" step="0.01" placeholder="Costo totale" value={rForm.costo_totale} onChange={(e) => updateRForm('costo_totale', e.target.value)} required />
+            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Fornitore" value={rForm.fornitore} onChange={(e) => setRForm({ ...rForm, fornitore: e.target.value })} />
+            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 sm:col-span-2" placeholder="Note" value={rForm.note} onChange={(e) => setRForm({ ...rForm, note: e.target.value })} />
+            <button className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white sm:col-span-2 sm:w-fit" type="submit">Salva rifornimento</button>
           </form>
         </div>
         <div className="grid gap-3">
