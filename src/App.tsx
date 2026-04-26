@@ -179,13 +179,16 @@ function App() {
     if (authError) setError(authError.message);
   }
 
-  async function signUp() {
-    setError('');
-    const { error: signUpError } = await supabase.auth.signUp({ email, password });
-    if (signUpError) setError(signUpError.message);
-    else setError('Registrazione avviata. Controlla la tua email per confermare.');
-  }
+async function signUp() {
+  setError('');
+  const { error: signUpError } = await supabase.auth.signUp({ email, password });
+  if (signUpError) setError(signUpError.message);
+  else setError('Registrazione avviata. Controlla la tua email per confermare.');
+}
 
+async function logout() {
+  await supabase.auth.signOut();
+}
   async function logout() {
     await supabase.auth.signOut();
   }
