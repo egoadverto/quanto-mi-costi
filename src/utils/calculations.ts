@@ -7,6 +7,8 @@ export type Veicolo = {
   tipo_energia: 'elettrico' | 'benzina' | 'diesel' | null;
   unita_default: 'kWh' | 'L' | null;
   odometro_iniziale: number | null;
+  km_iniziali: number | null;
+  data_acquisto: string | null;
   data_creazione: string | null;
   note: string | null;
 };

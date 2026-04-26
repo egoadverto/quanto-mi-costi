@@ -103,3 +103,6 @@ for update using (user_id = auth.uid()) with check (user_id = auth.uid());
 drop policy if exists spese_delete_own on public.spese;
 create policy spese_delete_own on public.spese
 for delete using (user_id = auth.uid());
+
+alter table public.veicoli
+  add column if not exists data_acquisto date;
