@@ -8,11 +8,16 @@ import Veicoli from './components/Veicoli';
 import { supabase } from './supabaseClient';
 import { calculateDashboard, calculateReport, calculateRifornimentoForm, RifornimentoForm, Rifornimento, Spesa, Veicolo } from './utils/calculations';
 
-const categorieSpesa = ['assicurazione', 'bollo', 'manutenzione', 'tagliando', 'gomme', 'revisione', 'accessori', 'parcheggio', 'pedaggi', 'lavaggio', 'altro'];
+const categorieSpesa = ['assicurazione','bollo','manutenzione','tagliando','gomme','revisione','accessori','parcheggio','pedaggi','lavaggio','altro'];
 
+const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' });
 const initialVForm = { nome: '', marca: '', modello: '', tipo_veicolo: 'auto', tipo_energia: 'benzina', unita_default: 'L', odometro_iniziale: '0', note: '' };
-const initialRForm: RifornimentoForm = { veicolo_id: '', data: '', odometro: '', quantita: '', unita: 'L', prezzo_unitario: '', costo_totale: '', fornitore: '', note: '' };
+const initialRForm = { veicolo_id: '', data: '', odometro: '', quantita: '', unita: 'L', prezzo_unitario: '', costo_totale: '', fornitore: '', note: '' };
 const initialSForm = { veicolo_id: '', data: '', categoria: 'manutenzione', descrizione: '', importo: '', odometro: '', note: '' };
+
+const sortByOdometer = (items: Rifornimento[]) => [...items].sort((a, b) => a.odometro - b.odometro);
+const sumRifornimenti = (items: Rifornimento[]) => items.reduce((acc, item) => acc + item.costo_totale, 0);
+const sumSpese = (items: Spesa[]) => items.reduce((acc, item) => acc + item.importo, 0);
 
 function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -140,9 +145,9 @@ function App() {
           <section className="app-card mx-auto w-full max-w-md shadow-sm">
             <h2 className="mb-3 text-xl font-semibold">Accesso</h2>
             <form onSubmit={login} className="space-y-3">
-              <input className="app-input w-full" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              <input className="app-input w-full" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-              <button className="app-button-primary w-full rounded-xl px-4 py-2 text-sm" type="submit">Accedi</button>
+              <input className="field-default" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <input className="field-default" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <button className="btn-primary w-full" type="submit">Accedi</button>
             </form>
             {error && <p className="mt-3 text-sm app-button-danger rounded-xl p-2">{error}</p>}
           </section>
@@ -171,13 +176,40 @@ function App() {
           </nav>
         </header>
 
-        {error && <p className="text-sm app-button-danger rounded-xl p-3">{error}</p>}
+        {error && <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
 
         <Dashboard dashboard={dashboard} />
-        <Rifornimenti veicoli={veicoli} rifornimenti={rifornimenti} nomeVeicoloById={nomeVeicoloById} form={rForm} onSubmit={addRifornimento} onFormChange={updateRForm} onQuickSet={setRForm} onUpdateCosto={updateRifornimentoCosto} onDelete={async (id) => deleteItem('rifornimenti', id)} />
-        <Spese veicoli={veicoli} spese={spese} nomeVeicoloById={nomeVeicoloById} categorieSpesa={categorieSpesa} form={sForm} onSubmit={addSpesa} onFormSet={setSForm} onUpdateImporto={updateSpesaImporto} onDelete={async (id) => deleteItem('spese', id)} />
+        <Rifornimenti
+          veicoli={veicoli}
+          rifornimenti={rifornimenti}
+          nomeVeicoloById={nomeVeicoloById}
+          form={rForm}
+          onSubmit={addRifornimento}
+          onFormChange={updateRForm}
+          onQuickSet={setRForm}
+          onUpdateCosto={updateRifornimentoCosto}
+          onDelete={async (id) => deleteItem('rifornimenti', id)}
+        />
+        <Spese
+          veicoli={veicoli}
+          spese={spese}
+          nomeVeicoloById={nomeVeicoloById}
+          categorieSpesa={categorieSpesa}
+          form={sForm}
+          onSubmit={addSpesa}
+          onFormSet={setSForm}
+          onUpdateImporto={updateSpesaImporto}
+          onDelete={async (id) => deleteItem('spese', id)}
+        />
         <Report reportData={reportData} efficienze={dashboard.efficienze} />
-        <Veicoli veicoli={veicoli} form={vForm} onSubmit={addVeicolo} onFormSet={setVForm} onDelete={async (id) => deleteItem('veicoli', id)} onUpdateNome={updateVeicoloNome} />
+        <Veicoli
+          veicoli={veicoli}
+          form={vForm}
+          onSubmit={addVeicolo}
+          onFormSet={setVForm}
+          onDelete={async (id) => deleteItem('veicoli', id)}
+          onUpdateNome={updateVeicoloNome}
+        />
       </div>
     </main>
   );
