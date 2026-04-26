@@ -39,9 +39,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (session) {
-      void loadData();
-    }
+    if (session) void loadData();
   }, [session]);
 
   async function loadData() {
@@ -138,20 +136,20 @@ function App() {
 
   if (!session) {
     return (
-      <main className="min-h-screen bg-slate-50 text-slate-900">
+      <main className="min-h-screen app-page">
         <div className="mx-auto max-w-6xl space-y-6 px-4 py-6">
           <header className="space-y-1">
             <h1 className="text-3xl font-bold">Ma quanto mi costi?!</h1>
-            <p className="text-sm text-slate-600">Costi, rifornimenti e report dei tuoi veicoli</p>
+            <p className="text-sm text-[var(--text-secondary)]">Costi, rifornimenti e report dei tuoi veicoli</p>
           </header>
-          <section className="mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="app-card mx-auto w-full max-w-md shadow-sm">
             <h2 className="mb-3 text-xl font-semibold">Accesso</h2>
             <form onSubmit={login} className="space-y-3">
               <input className="field-default" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
               <input className="field-default" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
               <button className="btn-primary w-full" type="submit">Accedi</button>
             </form>
-            {error && <p className="mt-3 rounded-xl border border-red-200 bg-red-50 p-2 text-sm text-red-700">{error}</p>}
+            {error && <p className="mt-3 text-sm app-button-danger rounded-xl p-2">{error}</p>}
           </section>
         </div>
       </main>
@@ -159,22 +157,22 @@ function App() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 text-[#12343b]">
+    <main className="min-h-screen app-page">
       <div className="mx-auto max-w-6xl space-y-6 px-4 py-6">
-        <header className="rounded-2xl border border-[#12343b] bg-[#2d545e] p-5 shadow-sm">
+        <header className="app-card p-5 shadow-sm">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white">Ma quanto mi costi?!</h1>
-              <p className="text-sm text-white/80">Costi, rifornimenti e report dei tuoi veicoli</p>
+              <h1 className="text-3xl font-bold">Ma quanto mi costi?!</h1>
+              <p className="text-sm text-[var(--text-secondary)]">Costi, rifornimenti e report dei tuoi veicoli</p>
             </div>
-            <button className="rounded-xl bg-[#12343b] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0f2a2f]" onClick={logout}>Logout</button>
+            <button className="app-button-primary rounded-xl px-4 py-2 text-sm" onClick={logout}>Logout</button>
           </div>
           <nav className="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-5">
-            <a href="#dashboard" className="rounded-xl border border-[#e1b382] bg-[#e1b382] px-3 py-2 text-center font-semibold text-[#12343b]">Dashboard</a>
-            <a href="#rifornimenti" className="rounded-xl border border-[#e1b382] bg-white px-3 py-2 text-center font-semibold text-[#2d545e]">Rifornimenti</a>
-            <a href="#spese" className="rounded-xl border border-[#e1b382] bg-white px-3 py-2 text-center font-semibold text-[#2d545e]">Spese</a>
-            <a href="#report" className="rounded-xl border border-[#e1b382] bg-white px-3 py-2 text-center font-semibold text-[#2d545e]">Report</a>
-            <a href="#veicoli" className="rounded-xl border border-[#e1b382] bg-white px-3 py-2 text-center font-semibold text-[#2d545e]">Veicoli</a>
+            <a href="#dashboard" className="app-nav-link app-nav-link-active rounded-xl px-3 py-2 text-center font-semibold">Dashboard</a>
+            <a href="#rifornimenti" className="app-nav-link rounded-xl px-3 py-2 text-center font-semibold">Rifornimenti</a>
+            <a href="#spese" className="app-nav-link rounded-xl px-3 py-2 text-center font-semibold">Spese</a>
+            <a href="#report" className="app-nav-link rounded-xl px-3 py-2 text-center font-semibold">Report</a>
+            <a href="#veicoli" className="app-nav-link rounded-xl px-3 py-2 text-center font-semibold">Veicoli</a>
           </nav>
         </header>
 

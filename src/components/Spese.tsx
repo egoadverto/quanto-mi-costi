@@ -51,7 +51,7 @@ function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, onSubmit
               </div>
               <div className="space-y-2">
                 <button className="btn-secondary" onClick={() => void onUpdateImporto(s.id, s.importo)}>Modifica</button>
-                <button className="btn-danger block" onClick={() => void onDelete(s.id)}>Elimina</button>
+                <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold block" onClick={() => void onDelete(s.id)}>Elimina</button>
               </div>
             </div>
           </article>
