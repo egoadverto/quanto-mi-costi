@@ -249,83 +249,75 @@ function App() {
 
   if (!session) {
     return (
-      <main className="min-h-screen bg-slate-50 text-slate-900">
+      <main className="min-h-screen bg-slate-50 text-[#12343b]">
         <div className="mx-auto max-w-6xl space-y-6 px-4 py-6">
-          <header className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">Ma quanto mi costi?!</h1>
-            <p className="text-sm text-slate-600">App personale per tracciare costi, rifornimenti e spese dei tuoi veicoli.</p>
+          <header className="space-y-1">
+            <h1 className="text-3xl font-bold text-[#12343b]">Ma quanto mi costi?!</h1>
+            <p className="text-sm text-[#12343b]/70">Costi, rifornimenti e report dei tuoi veicoli</p>
           </header>
-          <section className="mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="mb-4 text-xl font-semibold">Accedi</h2>
-            <form onSubmit={login} className="space-y-4">
-              <div className="space-y-1">
-                <label htmlFor="login-email" className="text-sm font-medium text-slate-700">Email</label>
-                <input id="login-email" className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="email" placeholder="nome@esempio.it" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                <p className="text-xs text-slate-500">Usa l&apos;email collegata al tuo account.</p>
-              </div>
-              <div className="space-y-1">
-                <label htmlFor="login-password" className="text-sm font-medium text-slate-700">Password</label>
-                <input id="login-password" className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="password" placeholder="Inserisci la tua password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                <p className="text-xs text-slate-500">La password non viene mostrata durante la digitazione.</p>
-              </div>
-              <button className="w-full rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white" type="submit">Accedi</button>
+          <section className="mx-auto w-full max-w-md rounded-2xl border border-[#c89666] bg-white p-5 shadow-sm">
+            <h2 className="mb-3 text-xl font-semibold text-[#12343b]">Accesso</h2>
+            <form onSubmit={login} className="space-y-3">
+              <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <button className="w-full rounded-xl bg-[#2d545e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#12343b]" type="submit">Accedi</button>
             </form>
+            {error && <p className="mt-3 rounded-xl border border-red-200 bg-red-50 p-2 text-sm text-red-700">{error}</p>}
           </section>
-          {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
+    <main className="min-h-screen bg-slate-50 text-[#12343b]">
       <div className="mx-auto max-w-6xl space-y-6 px-4 py-6">
-        <header className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <header className="rounded-2xl border border-[#12343b] bg-[#2d545e] p-5 shadow-sm">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold">Ma quanto mi costi?!</h1>
-              <p className="text-sm text-slate-600">Costi, rifornimenti e report dei tuoi veicoli</p>
+              <h1 className="text-3xl font-bold text-white">Ma quanto mi costi?!</h1>
+              <p className="text-sm text-white/80">Costi, rifornimenti e report dei tuoi veicoli</p>
             </div>
-            <button className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700" onClick={logout}>Logout</button>
+            <button className="rounded-xl bg-[#12343b] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0f2a2f]" onClick={logout}>Logout</button>
           </div>
           <nav className="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-5">
-            <a href="#dashboard" className="rounded-xl border border-slate-300 bg-slate-100 px-3 py-2 text-center font-semibold text-slate-700">Dashboard</a>
-            <a href="#rifornimenti" className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-center font-semibold text-slate-700">Rifornimenti</a>
-            <a href="#spese" className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-center font-semibold text-slate-700">Spese</a>
-            <a href="#report" className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-center font-semibold text-slate-700">Report</a>
-            <a href="#veicoli" className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-center font-semibold text-slate-700">Veicoli</a>
+            <a href="#dashboard" className="rounded-xl border border-[#e1b382] bg-[#e1b382] px-3 py-2 text-center font-semibold text-[#12343b]">Dashboard</a>
+            <a href="#rifornimenti" className="rounded-xl border border-[#e1b382] bg-white px-3 py-2 text-center font-semibold text-[#2d545e]">Rifornimenti</a>
+            <a href="#spese" className="rounded-xl border border-[#e1b382] bg-white px-3 py-2 text-center font-semibold text-[#2d545e]">Spese</a>
+            <a href="#report" className="rounded-xl border border-[#e1b382] bg-white px-3 py-2 text-center font-semibold text-[#2d545e]">Report</a>
+            <a href="#veicoli" className="rounded-xl border border-[#e1b382] bg-white px-3 py-2 text-center font-semibold text-[#2d545e]">Veicoli</a>
           </nav>
         </header>
 
       {error && <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
 
       <section id="dashboard" className="space-y-3">
-        <h2 className="text-xl font-semibold">Dashboard</h2>
+        <h2 className="text-xl font-semibold text-[#12343b]">Dashboard</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><p className="text-xs text-slate-500">Totale anno</p><p className="text-lg font-semibold">{euro.format(dashboard.totaleAnno)}</p></div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><p className="text-xs text-slate-500">Costo medio mensile</p><p className="text-lg font-semibold">{euro.format(dashboard.costoMedioMensile)}</p></div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><p className="text-xs text-slate-500">Costo/km</p><p className="text-lg font-semibold">{dashboard.costoKm ? `${dashboard.costoKm.toFixed(2)} €/km` : 'N/D'}</p></div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><p className="text-xs text-slate-500">Veicolo più costoso</p><p className="text-sm font-semibold">{dashboard.costoPerVeicolo ? dashboard.costoPerVeicolo.nome : 'N/D'}</p></div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><p className="text-xs text-slate-500">Ultimo rifornimento</p><p className="text-sm">{dashboard.ultimoRifornimento ? `${dashboard.ultimoRifornimento.data} · ${euro.format(dashboard.ultimoRifornimento.costo_totale)}` : 'N/D'}</p></div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><p className="text-xs text-slate-500">Ultima spesa</p><p className="text-sm">{dashboard.ultimaSpesa ? `${dashboard.ultimaSpesa.data} · ${euro.format(dashboard.ultimaSpesa.importo)}` : 'N/D'}</p></div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2"><p className="text-xs text-slate-500">Efficienza media</p><ul className="mt-1 space-y-1 text-sm">{dashboard.efficienze.map((e) => <li key={e.veicolo}>{e.veicolo}: {e.valore ? `${e.valore.toFixed(2)} ${e.unita}` : 'N/D'}</li>)}</ul></div>
+          <div className="rounded-2xl border border-[#c89666] bg-white p-4 shadow-sm"><p className="text-xs text-[#12343b]/70">Totale anno</p><p className="text-lg font-semibold text-[#2d545e]">{euro.format(dashboard.totaleAnno)}</p></div>
+          <div className="rounded-2xl border border-[#c89666] bg-white p-4 shadow-sm"><p className="text-xs text-[#12343b]/70">Costo medio mensile</p><p className="text-lg font-semibold text-[#2d545e]">{euro.format(dashboard.costoMedioMensile)}</p></div>
+          <div className="rounded-2xl border border-[#c89666] bg-white p-4 shadow-sm"><p className="text-xs text-[#12343b]/70">Costo/km</p><p className="text-lg font-semibold text-[#2d545e]">{dashboard.costoKm ? `${dashboard.costoKm.toFixed(2)} €/km` : 'N/D'}</p></div>
+          <div className="rounded-2xl border border-[#c89666] bg-white p-4 shadow-sm"><p className="text-xs text-[#12343b]/70">Veicolo più costoso</p><p className="text-sm font-semibold text-[#2d545e]">{dashboard.costoPerVeicolo ? dashboard.costoPerVeicolo.nome : 'N/D'}</p></div>
+          <div className="rounded-2xl border border-[#c89666] bg-white p-4 shadow-sm"><p className="text-xs text-[#12343b]/70">Ultimo rifornimento</p><p className="text-sm">{dashboard.ultimoRifornimento ? `${dashboard.ultimoRifornimento.data} · ${euro.format(dashboard.ultimoRifornimento.costo_totale)}` : 'N/D'}</p></div>
+          <div className="rounded-2xl border border-[#c89666] bg-white p-4 shadow-sm"><p className="text-xs text-[#12343b]/70">Ultima spesa</p><p className="text-sm">{dashboard.ultimaSpesa ? `${dashboard.ultimaSpesa.data} · ${euro.format(dashboard.ultimaSpesa.importo)}` : 'N/D'}</p></div>
+          <div className="rounded-2xl border border-[#c89666] bg-white p-4 shadow-sm lg:col-span-2"><p className="text-xs text-[#12343b]/70">Efficienza media</p><ul className="mt-1 space-y-1 text-sm">{dashboard.efficienze.map((e) => <li key={e.veicolo}>{e.veicolo}: {e.valore ? `${e.valore.toFixed(2)} ${e.unita}` : 'N/D'}</li>)}</ul></div>
         </div>
       </section>
 
       <section id="rifornimenti" className="space-y-3">
-        <h2 className="text-xl font-semibold">Rifornimenti</h2>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="text-xl font-semibold text-[#12343b]">Rifornimenti</h2>
+        <div className="rounded-2xl border border-[#c89666] bg-white p-5 shadow-sm">
           <form onSubmit={addRifornimento} className="grid gap-3 sm:grid-cols-2">
-            <select className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" value={rForm.veicolo_id} onChange={(e) => setRForm({ ...rForm, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
-            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="date" value={rForm.data} onChange={(e) => setRForm({ ...rForm, data: e.target.value })} required />
-            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="number" placeholder="Odometro" value={rForm.odometro} onChange={(e) => setRForm({ ...rForm, odometro: e.target.value })} required />
-            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="number" step="0.01" placeholder="Quantità" value={rForm.quantita} onChange={(e) => setRForm({ ...rForm, quantita: e.target.value })} required />
-            <select className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" value={rForm.unita} onChange={(e) => setRForm({ ...rForm, unita: e.target.value })}><option value="L">L</option><option value="kWh">kWh</option></select>
-            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="number" step="0.0001" placeholder="Prezzo unitario" value={rForm.prezzo_unitario} onChange={(e) => setRForm({ ...rForm, prezzo_unitario: e.target.value })} required />
-            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="number" step="0.01" placeholder="Costo totale" value={rForm.costo_totale} onChange={(e) => setRForm({ ...rForm, costo_totale: e.target.value })} required />
-            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Fornitore" value={rForm.fornitore} onChange={(e) => setRForm({ ...rForm, fornitore: e.target.value })} />
-            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 sm:col-span-2" placeholder="Note" value={rForm.note} onChange={(e) => setRForm({ ...rForm, note: e.target.value })} />
-            <button className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white sm:col-span-2 sm:w-fit" type="submit">Salva rifornimento</button>
+            <select className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" value={rForm.veicolo_id} onChange={(e) => setRForm({ ...rForm, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
+            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="date" value={rForm.data} onChange={(e) => setRForm({ ...rForm, data: e.target.value })} required />
+            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="number" placeholder="Odometro" value={rForm.odometro} onChange={(e) => setRForm({ ...rForm, odometro: e.target.value })} required />
+            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="number" step="0.01" placeholder="Quantità" value={rForm.quantita} onChange={(e) => setRForm({ ...rForm, quantita: e.target.value })} required />
+            <select className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" value={rForm.unita} onChange={(e) => setRForm({ ...rForm, unita: e.target.value })}><option value="L">L</option><option value="kWh">kWh</option></select>
+            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="number" step="0.0001" placeholder="Prezzo unitario" value={rForm.prezzo_unitario} onChange={(e) => setRForm({ ...rForm, prezzo_unitario: e.target.value })} required />
+            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="number" step="0.01" placeholder="Costo totale" value={rForm.costo_totale} onChange={(e) => setRForm({ ...rForm, costo_totale: e.target.value })} required />
+            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" placeholder="Fornitore" value={rForm.fornitore} onChange={(e) => setRForm({ ...rForm, fornitore: e.target.value })} />
+            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382] sm:col-span-2" placeholder="Note" value={rForm.note} onChange={(e) => setRForm({ ...rForm, note: e.target.value })} />
+            <button className="rounded-xl bg-[#2d545e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#12343b] sm:col-span-2 sm:w-fit" type="submit">Salva rifornimento</button>
           </form>
         </div>
         <div className="grid gap-3">
@@ -336,17 +328,17 @@ function App() {
               .sort((a, b) => b.odometro - a.odometro)[0];
             const eff = precedente && r.quantita > 0 ? (r.odometro - precedente.odometro) / r.quantita : null;
             return (
-              <article key={r.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <article key={r.id} className="rounded-2xl border border-[#c89666] bg-white p-4 shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div className="space-y-1 text-sm">
                     <p className="font-semibold">{veicoloNome}</p>
-                    <p className="text-slate-600">{r.data}</p>
+                    <p className="text-[#12343b]/70">{r.data}</p>
                     <p>{r.quantita} {r.unita} · {r.prezzo_unitario.toFixed(4)} €/u</p>
                     <p>Costo totale: <strong>{euro.format(r.costo_totale)}</strong></p>
-                    <p className="text-slate-600">Efficienza: {eff ? `${eff.toFixed(2)} ${r.unita === 'kWh' ? 'km/kWh' : 'km/L'}` : 'N/D'}</p>
+                    <p className="text-[#12343b]/70">Efficienza: {eff ? `${eff.toFixed(2)} ${r.unita === 'kWh' ? 'km/kWh' : 'km/L'}` : 'N/D'}</p>
                   </div>
                   <div className="space-y-2">
-                    <button className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700" onClick={() => void updateRifornimentoCosto(r.id, r.costo_totale)}>Modifica</button>
+                    <button className="rounded-xl border border-[#2d545e] px-3 py-2 text-sm font-semibold text-[#2d545e]" onClick={() => void updateRifornimentoCosto(r.id, r.costo_totale)}>Modifica</button>
                     <button className="block rounded-xl border border-red-300 px-3 py-2 text-sm font-semibold text-red-700" onClick={() => void deleteItem('rifornimenti', r.id)}>Elimina</button>
                   </div>
                 </div>
@@ -357,30 +349,30 @@ function App() {
       </section>
 
       <section id="spese" className="space-y-3">
-        <h2 className="text-xl font-semibold">Spese</h2>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="text-xl font-semibold text-[#12343b]">Spese</h2>
+        <div className="rounded-2xl border border-[#c89666] bg-white p-5 shadow-sm">
           <form onSubmit={addSpesa} className="grid gap-3 sm:grid-cols-2">
-            <select className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" value={sForm.veicolo_id} onChange={(e) => setSForm({ ...sForm, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
-            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="date" value={sForm.data} onChange={(e) => setSForm({ ...sForm, data: e.target.value })} required />
-            <select className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" value={sForm.categoria} onChange={(e) => setSForm({ ...sForm, categoria: e.target.value })}>{categorieSpesa.map((c) => <option key={c} value={c}>{c}</option>)}</select>
-            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Descrizione" value={sForm.descrizione} onChange={(e) => setSForm({ ...sForm, descrizione: e.target.value })} />
-            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="number" step="0.01" placeholder="Importo" value={sForm.importo} onChange={(e) => setSForm({ ...sForm, importo: e.target.value })} required />
-            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="number" placeholder="Odometro (opzionale)" value={sForm.odometro} onChange={(e) => setSForm({ ...sForm, odometro: e.target.value })} />
-            <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 sm:col-span-2" placeholder="Note" value={sForm.note} onChange={(e) => setSForm({ ...sForm, note: e.target.value })} />
-            <button className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white sm:col-span-2 sm:w-fit" type="submit">Salva spesa</button>
+            <select className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" value={sForm.veicolo_id} onChange={(e) => setSForm({ ...sForm, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
+            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="date" value={sForm.data} onChange={(e) => setSForm({ ...sForm, data: e.target.value })} required />
+            <select className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" value={sForm.categoria} onChange={(e) => setSForm({ ...sForm, categoria: e.target.value })}>{categorieSpesa.map((c) => <option key={c} value={c}>{c}</option>)}</select>
+            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" placeholder="Descrizione" value={sForm.descrizione} onChange={(e) => setSForm({ ...sForm, descrizione: e.target.value })} />
+            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="number" step="0.01" placeholder="Importo" value={sForm.importo} onChange={(e) => setSForm({ ...sForm, importo: e.target.value })} required />
+            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" type="number" placeholder="Odometro (opzionale)" value={sForm.odometro} onChange={(e) => setSForm({ ...sForm, odometro: e.target.value })} />
+            <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382] sm:col-span-2" placeholder="Note" value={sForm.note} onChange={(e) => setSForm({ ...sForm, note: e.target.value })} />
+            <button className="rounded-xl bg-[#2d545e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#12343b] sm:col-span-2 sm:w-fit" type="submit">Salva spesa</button>
           </form>
         </div>
         <div className="grid gap-3">
           {spese.map((s) => (
-            <article key={s.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <article key={s.id} className="rounded-2xl border border-[#c89666] bg-white p-4 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div className="space-y-1 text-sm">
                   <p className="font-semibold">{s.categoria || 'altro'} · {nomeVeicoloById[s.veicolo_id] ?? 'Veicolo'}</p>
-                  <p className="text-slate-600">{s.data}</p>
+                  <p className="text-[#12343b]/70">{s.data}</p>
                   <p>Importo: <strong>{euro.format(s.importo)}</strong></p>
                 </div>
                 <div className="space-y-2">
-                  <button className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700" onClick={() => void updateSpesaImporto(s.id, s.importo)}>Modifica</button>
+                  <button className="rounded-xl border border-[#2d545e] px-3 py-2 text-sm font-semibold text-[#2d545e]" onClick={() => void updateSpesaImporto(s.id, s.importo)}>Modifica</button>
                   <button className="block rounded-xl border border-red-300 px-3 py-2 text-sm font-semibold text-red-700" onClick={() => void deleteItem('spese', s.id)}>Elimina</button>
                 </div>
               </div>
@@ -390,47 +382,47 @@ function App() {
       </section>
 
       <section id="report" className="space-y-3">
-        <h2 className="text-xl font-semibold">Report</h2>
+        <h2 className="text-xl font-semibold text-[#12343b]">Report</h2>
         <div className="grid gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-[#c89666] bg-white p-5 shadow-sm">
             <h3 className="mb-3 font-semibold">Costo totale per veicolo</h3>
-            <div className="space-y-2">{reportData.perVeicolo.map(([nome, valore]) => <div key={nome}><div className="mb-1 flex justify-between text-sm"><span>{nome}</span><span>{euro.format(valore)}</span></div><div className="h-2 rounded bg-slate-100"><div className="h-2 rounded bg-slate-800" style={{ width: `${Math.max(6, (valore / reportData.maxVeicolo) * 100)}%` }} /></div></div>)}</div>
+            <div className="space-y-2">{reportData.perVeicolo.map(([nome, valore]) => <div key={nome}><div className="mb-1 flex justify-between text-sm"><span>{nome}</span><span>{euro.format(valore)}</span></div><div className="h-2 rounded bg-[#e1b382]/30"><div className="h-2 rounded bg-[#2d545e]" style={{ width: `${Math.max(6, (valore / reportData.maxVeicolo) * 100)}%` }} /></div></div>)}</div>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-[#c89666] bg-white p-5 shadow-sm">
             <h3 className="mb-3 font-semibold">Costo totale per categoria</h3>
-            <div className="space-y-2">{reportData.perCategoria.map(([categoria, valore]) => <div key={categoria}><div className="mb-1 flex justify-between text-sm"><span>{categoria}</span><span>{euro.format(valore)}</span></div><div className="h-2 rounded bg-slate-100"><div className="h-2 rounded bg-slate-700" style={{ width: `${Math.max(6, (valore / reportData.maxCategoria) * 100)}%` }} /></div></div>)}</div>
+            <div className="space-y-2">{reportData.perCategoria.map(([categoria, valore]) => <div key={categoria}><div className="mb-1 flex justify-between text-sm"><span>{categoria}</span><span>{euro.format(valore)}</span></div><div className="h-2 rounded bg-[#e1b382]/30"><div className="h-2 rounded bg-[#2d545e]" style={{ width: `${Math.max(6, (valore / reportData.maxCategoria) * 100)}%` }} /></div></div>)}</div>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-[#c89666] bg-white p-5 shadow-sm">
             <h3 className="mb-3 font-semibold">Totali mensili</h3>
-            <div className="space-y-2">{reportData.perMese.map(([mese, valore]) => <div key={mese}><div className="mb-1 flex justify-between text-sm"><span>{mese}</span><span>{euro.format(valore)}</span></div><div className="h-2 rounded bg-slate-100"><div className="h-2 rounded bg-slate-600" style={{ width: `${Math.max(6, (valore / reportData.maxMese) * 100)}%` }} /></div></div>)}</div>
+            <div className="space-y-2">{reportData.perMese.map(([mese, valore]) => <div key={mese}><div className="mb-1 flex justify-between text-sm"><span>{mese}</span><span>{euro.format(valore)}</span></div><div className="h-2 rounded bg-[#e1b382]/30"><div className="h-2 rounded bg-[#2d545e]" style={{ width: `${Math.max(6, (valore / reportData.maxMese) * 100)}%` }} /></div></div>)}</div>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-[#c89666] bg-white p-5 shadow-sm">
             <h3 className="mb-3 font-semibold">Efficienza media per veicolo</h3>
-            <div className="space-y-2 text-sm">{dashboard.efficienze.map((e) => <div key={e.veicolo} className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2"><span>{e.veicolo}</span><span className="font-semibold">{e.valore ? `${e.valore.toFixed(2)} ${e.unita}` : 'N/D'}</span></div>)}</div>
+            <div className="space-y-2 text-sm">{dashboard.efficienze.map((e) => <div key={e.veicolo} className="flex items-center justify-between rounded-xl border border-[#c89666] px-3 py-2"><span>{e.veicolo}</span><span className="font-semibold">{e.valore ? `${e.valore.toFixed(2)} ${e.unita}` : 'N/D'}</span></div>)}</div>
           </div>
         </div>
       </section>
 
       <section id="veicoli" className="space-y-3">
-        <h2 className="text-xl font-semibold">Veicoli</h2>
+        <h2 className="text-xl font-semibold text-[#12343b]">Veicoli</h2>
         <div className="grid gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-[#c89666] bg-white p-5 shadow-sm">
             <h3 className="mb-3 font-semibold">Nuovo veicolo</h3>
             <form onSubmit={addVeicolo} className="grid gap-3 sm:grid-cols-2">
-              <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Nome*" value={vForm.nome} onChange={(e) => setVForm({ ...vForm, nome: e.target.value })} required />
-              <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Marca" value={vForm.marca} onChange={(e) => setVForm({ ...vForm, marca: e.target.value })} />
-              <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Modello" value={vForm.modello} onChange={(e) => setVForm({ ...vForm, modello: e.target.value })} />
-              <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Odometro iniziale" type="number" value={vForm.odometro_iniziale} onChange={(e) => setVForm({ ...vForm, odometro_iniziale: e.target.value })} />
-              <select className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" value={vForm.tipo_veicolo} onChange={(e) => setVForm({ ...vForm, tipo_veicolo: e.target.value })}><option value="auto">Auto</option><option value="moto">Moto</option></select>
-              <select className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" value={vForm.tipo_energia} onChange={(e) => setVForm({ ...vForm, tipo_energia: e.target.value })}><option value="benzina">Benzina</option><option value="diesel">Diesel</option><option value="elettrico">Elettrico</option></select>
-              <select className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" value={vForm.unita_default} onChange={(e) => setVForm({ ...vForm, unita_default: e.target.value })}><option value="L">L</option><option value="kWh">kWh</option></select>
-              <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 sm:col-span-2" placeholder="Note" value={vForm.note} onChange={(e) => setVForm({ ...vForm, note: e.target.value })} />
-              <button className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white sm:col-span-2 sm:w-fit" type="submit">Salva veicolo</button>
+              <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" placeholder="Nome*" value={vForm.nome} onChange={(e) => setVForm({ ...vForm, nome: e.target.value })} required />
+              <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" placeholder="Marca" value={vForm.marca} onChange={(e) => setVForm({ ...vForm, marca: e.target.value })} />
+              <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" placeholder="Modello" value={vForm.modello} onChange={(e) => setVForm({ ...vForm, modello: e.target.value })} />
+              <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" placeholder="Odometro iniziale" type="number" value={vForm.odometro_iniziale} onChange={(e) => setVForm({ ...vForm, odometro_iniziale: e.target.value })} />
+              <select className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" value={vForm.tipo_veicolo} onChange={(e) => setVForm({ ...vForm, tipo_veicolo: e.target.value })}><option value="auto">Auto</option><option value="moto">Moto</option></select>
+              <select className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" value={vForm.tipo_energia} onChange={(e) => setVForm({ ...vForm, tipo_energia: e.target.value })}><option value="benzina">Benzina</option><option value="diesel">Diesel</option><option value="elettrico">Elettrico</option></select>
+              <select className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382]" value={vForm.unita_default} onChange={(e) => setVForm({ ...vForm, unita_default: e.target.value })}><option value="L">L</option><option value="kWh">kWh</option></select>
+              <input className="w-full rounded-xl border border-[#c89666] px-3 py-2 text-sm focus:border-[#c89666] focus:outline-none focus:ring-2 focus:ring-[#e1b382] sm:col-span-2" placeholder="Note" value={vForm.note} onChange={(e) => setVForm({ ...vForm, note: e.target.value })} />
+              <button className="rounded-xl bg-[#2d545e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#12343b] sm:col-span-2 sm:w-fit" type="submit">Salva veicolo</button>
             </form>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-[#c89666] bg-white p-5 shadow-sm">
             <h3 className="mb-3 font-semibold">Elenco veicoli</h3>
-            <ul className="space-y-2">{veicoli.map((v) => <li key={v.id} className="rounded-xl border border-slate-200 p-3"><div className="flex items-start justify-between gap-2"><span className="text-sm font-semibold">{v.nome}</span><button className="rounded-xl border border-red-300 px-3 py-2 text-sm font-semibold text-red-700" onClick={() => void deleteItem('veicoli', v.id)}>Elimina</button></div><button className="mt-2 rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700" onClick={() => void updateVeicoloNome(v.id, v.nome)}>Modifica</button></li>)}</ul>
+            <ul className="space-y-2">{veicoli.map((v) => <li key={v.id} className="rounded-xl border border-[#c89666] p-3"><div className="flex items-start justify-between gap-2"><span className="text-sm font-semibold text-[#2d545e]">{v.nome}</span><button className="rounded-xl border border-red-300 px-3 py-2 text-sm font-semibold text-red-700" onClick={() => void deleteItem('veicoli', v.id)}>Elimina</button></div><button className="mt-2 rounded-xl border border-[#2d545e] px-3 py-2 text-sm font-semibold text-[#2d545e]" onClick={() => void updateVeicoloNome(v.id, v.nome)}>Modifica</button></li>)}</ul>
           </div>
         </div>
       </section>
