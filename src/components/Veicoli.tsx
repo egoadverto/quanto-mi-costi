@@ -10,6 +10,7 @@ type VeicoliForm = {
   unita_default: string;
   odometro_iniziale: string;
   data_acquisto: string;
+  km_iniziali: string;
   note: string;
 };
 

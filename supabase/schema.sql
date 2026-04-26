@@ -105,4 +105,5 @@ create policy spese_delete_own on public.spese
 for delete using (user_id = auth.uid());
 
 alter table public.veicoli
-  add column if not exists data_acquisto date;
+  add column if not exists data_acquisto date,
+  add column if not exists km_iniziali numeric;

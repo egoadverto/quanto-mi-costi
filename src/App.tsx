@@ -70,6 +70,7 @@ function App() {
     setError('');
     if (!vForm.nome.trim()) return setError('Nome veicolo obbligatorio');
     if (Number.isNaN(Number(vForm.odometro_iniziale))) return setError('Odometro non valido');
+    if (vForm.km_iniziali.trim() !== '' && Number.isNaN(Number(vForm.km_iniziali))) return setError('Km iniziali non validi');
 
     const veicoloPayload = {
       nome: vForm.nome.trim(),
@@ -80,6 +81,7 @@ function App() {
       unita_default: vForm.unita_default,
       odometro_iniziale: Number(vForm.odometro_iniziale),
       data_acquisto: vForm.data_acquisto || null,
+      km_iniziali: vForm.km_iniziali.trim() === '' ? null : Number(vForm.km_iniziali),
       note: vForm.note.trim() || null
     };
 
@@ -134,6 +136,7 @@ function App() {
       unita_default: veicolo.unita_default ?? 'L',
       odometro_iniziale: String(veicolo.odometro_iniziale ?? 0),
       data_acquisto: veicolo.data_acquisto ?? '',
+      km_iniziali: veicolo.km_iniziali === null || veicolo.km_iniziali === undefined ? '' : String(veicolo.km_iniziali),
       note: veicolo.note ?? ''
     });
   }
