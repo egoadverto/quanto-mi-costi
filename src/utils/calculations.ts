@@ -8,7 +8,6 @@ export type Veicolo = {
   unita_default: 'kWh' | 'L' | null;
   odometro_iniziale: number | null;
   data_acquisto: string | null;
-  km_iniziali: number | null;
   data_creazione: string | null;
   note: string | null;
 };

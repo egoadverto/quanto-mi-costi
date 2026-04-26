@@ -67,6 +67,7 @@ function App() {
 
   async function saveVeicolo(e: FormEvent) {
     e.preventDefault();
+    setError('');
     if (!vForm.nome.trim()) return setError('Nome veicolo obbligatorio');
     if (Number.isNaN(Number(vForm.odometro_iniziale))) return setError('Odometro non valido');
     if (vForm.km_iniziali.trim() !== '' && Number.isNaN(Number(vForm.km_iniziali))) return setError('Km iniziali non validi');
