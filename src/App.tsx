@@ -152,6 +152,25 @@ function App() {
     await loadData();
   }
 
+  function updateRForm(field: keyof typeof rForm, value: string) {
+    const nextForm = { ...rForm, [field]: value };
+    if (field === 'quantita' || field === 'prezzo_unitario') {
+      const quantita = Number(nextForm.quantita);
+      const prezzoUnitario = Number(nextForm.prezzo_unitario);
+      if (!Number.isNaN(quantita) && !Number.isNaN(prezzoUnitario)) {
+        nextForm.costo_totale = (Math.round(quantita * prezzoUnitario * 100) / 100).toFixed(2);
+      }
+    }
+    if (field === 'costo_totale') {
+      const quantita = Number(nextForm.quantita);
+      const costoTotale = Number(nextForm.costo_totale);
+      if (quantita > 0 && !Number.isNaN(costoTotale)) {
+        nextForm.prezzo_unitario = (Math.round((costoTotale / quantita) * 10000) / 10000).toFixed(4);
+      }
+    }
+    setRForm(nextForm);
+  }
+
   const dashboard = useMemo(() => {
     const anno = new Date().getFullYear();
     const rAnno = rifornimenti.filter((r) => new Date(r.data).getFullYear() === anno);
@@ -216,6 +235,7 @@ function App() {
       {error && <p className="rounded bg-red-100 p-2 text-red-700">{error}</p>}
 
       <section className="grid gap-2 rounded-xl bg-white p-4 shadow sm:grid-cols-2">
+        <h2 className="font-semibold sm:col-span-2">Dashboard</h2>
         <p><strong>Totale anno corrente:</strong> {euro.format(dashboard.totaleAnno)}</p>
         <p><strong>Costo medio mensile:</strong> {euro.format(dashboard.costoMedioMensile)}</p>
         <p><strong>Costo/km:</strong> {dashboard.costoKm ? `${dashboard.costoKm.toFixed(2)} €/km` : 'Dati insufficienti'}</p>
@@ -233,6 +253,42 @@ function App() {
       </section>
 
       <section className="rounded-xl bg-white p-4 shadow">
+        <h2 className="mb-2 font-semibold">Rifornimenti / Ricariche</h2>
+        <form onSubmit={addRifornimento} className="grid gap-2 sm:grid-cols-2">
+          <select className="rounded border p-2" value={rForm.veicolo_id} onChange={(e) => updateRForm('veicolo_id', e.target.value)} required><option value="">Seleziona veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
+          <input className="rounded border p-2" type="date" value={rForm.data} onChange={(e) => updateRForm('data', e.target.value)} required />
+          <input className="rounded border p-2" type="number" placeholder="Odometro" value={rForm.odometro} onChange={(e) => updateRForm('odometro', e.target.value)} required />
+          <input className="rounded border p-2" type="number" step="0.01" placeholder="Quantità" value={rForm.quantita} onChange={(e) => updateRForm('quantita', e.target.value)} required />
+          <select className="rounded border p-2" value={rForm.unita} onChange={(e) => updateRForm('unita', e.target.value)}><option value="L">L</option><option value="kWh">kWh</option></select>
+          <input className="rounded border p-2" type="number" step="0.0001" placeholder="Prezzo unitario" value={rForm.prezzo_unitario} onChange={(e) => updateRForm('prezzo_unitario', e.target.value)} required />
+          <input className="rounded border p-2" type="number" step="0.01" placeholder="Costo totale" value={rForm.costo_totale} onChange={(e) => updateRForm('costo_totale', e.target.value)} required />
+          <input className="rounded border p-2" placeholder="Fornitore" value={rForm.fornitore} onChange={(e) => updateRForm('fornitore', e.target.value)} />
+          <input className="rounded border p-2 sm:col-span-2" placeholder="Note" value={rForm.note} onChange={(e) => updateRForm('note', e.target.value)} />
+          <button className="rounded bg-slate-900 p-2 text-white sm:col-span-2" type="submit">Salva rifornimento</button>
+        </form>
+      </section>
+
+      <section className="rounded-xl bg-white p-4 shadow">
+        <h2 className="mb-2 font-semibold">Spese</h2>
+        <form onSubmit={addSpesa} className="grid gap-2 sm:grid-cols-2">
+          <select className="rounded border p-2" value={sForm.veicolo_id} onChange={(e) => setSForm({ ...sForm, veicolo_id: e.target.value })} required><option value="">Seleziona veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
+          <input className="rounded border p-2" type="date" value={sForm.data} onChange={(e) => setSForm({ ...sForm, data: e.target.value })} required />
+          <select className="rounded border p-2" value={sForm.categoria} onChange={(e) => setSForm({ ...sForm, categoria: e.target.value })}>{categorieSpesa.map((c) => <option key={c} value={c}>{c}</option>)}</select>
+          <input className="rounded border p-2" placeholder="Descrizione" value={sForm.descrizione} onChange={(e) => setSForm({ ...sForm, descrizione: e.target.value })} />
+          <input className="rounded border p-2" type="number" step="0.01" placeholder="Importo" value={sForm.importo} onChange={(e) => setSForm({ ...sForm, importo: e.target.value })} required />
+          <input className="rounded border p-2" type="number" placeholder="Odometro" value={sForm.odometro} onChange={(e) => setSForm({ ...sForm, odometro: e.target.value })} />
+          <input className="rounded border p-2 sm:col-span-2" placeholder="Note" value={sForm.note} onChange={(e) => setSForm({ ...sForm, note: e.target.value })} />
+          <button className="rounded bg-slate-900 p-2 text-white sm:col-span-2" type="submit">Salva spesa</button>
+        </form>
+      </section>
+
+      <section className="grid gap-4 sm:grid-cols-2">
+        <h2 className="font-semibold sm:col-span-2">Storico dati</h2>
+        <div className="rounded-xl bg-white p-4 shadow sm:col-span-1"><h3 className="mb-2 font-semibold">Rifornimenti</h3><ul className="space-y-1">{rifornimenti.map((r) => <li key={r.id} className="space-y-1 border-b pb-1"><div className="flex justify-between gap-2"><span>{r.data} · {euro.format(r.costo_totale)}</span><button className="text-red-600" onClick={() => void deleteItem('rifornimenti', r.id)}>Elimina</button></div><button className="text-sm text-blue-700" onClick={() => void updateRifornimentoCosto(r.id, r.costo_totale)}>Modifica</button></li>)}</ul></div>
+        <div className="rounded-xl bg-white p-4 shadow sm:col-span-1"><h3 className="mb-2 font-semibold">Spese</h3><ul className="space-y-1">{spese.map((s) => <li key={s.id} className="space-y-1 border-b pb-1"><div className="flex justify-between gap-2"><span>{s.data} · {euro.format(s.importo)}</span><button className="text-red-600" onClick={() => void deleteItem('spese', s.id)}>Elimina</button></div><button className="text-sm text-blue-700" onClick={() => void updateSpesaImporto(s.id, s.importo)}>Modifica</button></li>)}</ul></div>
+      </section>
+
+      <section className="rounded-xl bg-white p-4 shadow">
         <h2 className="mb-2 font-semibold">Nuovo veicolo</h2>
         <form onSubmit={addVeicolo} className="grid gap-2 sm:grid-cols-2">
           <input className="rounded border p-2" placeholder="Nome*" value={vForm.nome} onChange={(e) => setVForm({ ...vForm, nome: e.target.value })} required />
@@ -247,40 +303,8 @@ function App() {
         </form>
       </section>
 
-      <section className="rounded-xl bg-white p-4 shadow">
-        <h2 className="mb-2 font-semibold">Nuovo rifornimento</h2>
-        <form onSubmit={addRifornimento} className="grid gap-2 sm:grid-cols-2">
-          <select className="rounded border p-2" value={rForm.veicolo_id} onChange={(e) => setRForm({ ...rForm, veicolo_id: e.target.value })} required><option value="">Seleziona veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
-          <input className="rounded border p-2" type="date" value={rForm.data} onChange={(e) => setRForm({ ...rForm, data: e.target.value })} required />
-          <input className="rounded border p-2" type="number" placeholder="Odometro" value={rForm.odometro} onChange={(e) => setRForm({ ...rForm, odometro: e.target.value })} required />
-          <input className="rounded border p-2" type="number" step="0.01" placeholder="Quantità" value={rForm.quantita} onChange={(e) => setRForm({ ...rForm, quantita: e.target.value })} required />
-          <select className="rounded border p-2" value={rForm.unita} onChange={(e) => setRForm({ ...rForm, unita: e.target.value })}><option value="L">L</option><option value="kWh">kWh</option></select>
-          <input className="rounded border p-2" type="number" step="0.0001" placeholder="Prezzo unitario" value={rForm.prezzo_unitario} onChange={(e) => setRForm({ ...rForm, prezzo_unitario: e.target.value })} required />
-          <input className="rounded border p-2" type="number" step="0.01" placeholder="Costo totale" value={rForm.costo_totale} onChange={(e) => setRForm({ ...rForm, costo_totale: e.target.value })} required />
-          <input className="rounded border p-2" placeholder="Fornitore" value={rForm.fornitore} onChange={(e) => setRForm({ ...rForm, fornitore: e.target.value })} />
-          <input className="rounded border p-2 sm:col-span-2" placeholder="Note" value={rForm.note} onChange={(e) => setRForm({ ...rForm, note: e.target.value })} />
-          <button className="rounded bg-slate-900 p-2 text-white sm:col-span-2" type="submit">Salva rifornimento</button>
-        </form>
-      </section>
-
-      <section className="rounded-xl bg-white p-4 shadow">
-        <h2 className="mb-2 font-semibold">Nuova spesa</h2>
-        <form onSubmit={addSpesa} className="grid gap-2 sm:grid-cols-2">
-          <select className="rounded border p-2" value={sForm.veicolo_id} onChange={(e) => setSForm({ ...sForm, veicolo_id: e.target.value })} required><option value="">Seleziona veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
-          <input className="rounded border p-2" type="date" value={sForm.data} onChange={(e) => setSForm({ ...sForm, data: e.target.value })} required />
-          <select className="rounded border p-2" value={sForm.categoria} onChange={(e) => setSForm({ ...sForm, categoria: e.target.value })}>{categorieSpesa.map((c) => <option key={c} value={c}>{c}</option>)}</select>
-          <input className="rounded border p-2" placeholder="Descrizione" value={sForm.descrizione} onChange={(e) => setSForm({ ...sForm, descrizione: e.target.value })} />
-          <input className="rounded border p-2" type="number" step="0.01" placeholder="Importo" value={sForm.importo} onChange={(e) => setSForm({ ...sForm, importo: e.target.value })} required />
-          <input className="rounded border p-2" type="number" placeholder="Odometro" value={sForm.odometro} onChange={(e) => setSForm({ ...sForm, odometro: e.target.value })} />
-          <input className="rounded border p-2 sm:col-span-2" placeholder="Note" value={sForm.note} onChange={(e) => setSForm({ ...sForm, note: e.target.value })} />
-          <button className="rounded bg-slate-900 p-2 text-white sm:col-span-2" type="submit">Salva spesa</button>
-        </form>
-      </section>
-
       <section className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-xl bg-white p-4 shadow sm:col-span-1"><h3 className="mb-2 font-semibold">Veicoli</h3><ul className="space-y-1">{veicoli.map((v) => <li key={v.id} className="space-y-1 border-b pb-1"><div className="flex justify-between gap-2"><span>{v.nome}</span><button className="text-red-600" onClick={() => void deleteItem('veicoli', v.id)}>Elimina</button></div><button className="text-sm text-blue-700" onClick={() => void updateVeicoloNome(v.id, v.nome)}>Modifica</button></li>)}</ul></div>
-        <div className="rounded-xl bg-white p-4 shadow sm:col-span-1"><h3 className="mb-2 font-semibold">Rifornimenti</h3><ul className="space-y-1">{rifornimenti.map((r) => <li key={r.id} className="space-y-1 border-b pb-1"><div className="flex justify-between gap-2"><span>{r.data} · {euro.format(r.costo_totale)}</span><button className="text-red-600" onClick={() => void deleteItem('rifornimenti', r.id)}>Elimina</button></div><button className="text-sm text-blue-700" onClick={() => void updateRifornimentoCosto(r.id, r.costo_totale)}>Modifica</button></li>)}</ul></div>
-        <div className="rounded-xl bg-white p-4 shadow sm:col-span-1"><h3 className="mb-2 font-semibold">Spese</h3><ul className="space-y-1">{spese.map((s) => <li key={s.id} className="space-y-1 border-b pb-1"><div className="flex justify-between gap-2"><span>{s.data} · {euro.format(s.importo)}</span><button className="text-red-600" onClick={() => void deleteItem('spese', s.id)}>Elimina</button></div><button className="text-sm text-blue-700" onClick={() => void updateSpesaImporto(s.id, s.importo)}>Modifica</button></li>)}</ul></div>
       </section>
     </main>
   );
