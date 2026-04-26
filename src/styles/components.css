@@ -103,10 +103,10 @@
 
 .stat-label {
   @apply text-xs;
-  color: var(--text-secondary);
+  color: color-mix(in oklab, var(--brand-dark) 70%, transparent);
 }
 
 .stat-value {
   @apply text-lg font-semibold;
-  color: var(--text-primary);
+  color: var(--brand-main);
 }
