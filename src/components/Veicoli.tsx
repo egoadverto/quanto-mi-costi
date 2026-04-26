@@ -59,15 +59,25 @@ function Veicoli({ veicoli, form, isEditing, onSubmit, onFormSet, onCancelEdit, 
             </label>
             <label className="space-y-1">
               <span className="text-sm font-medium">Tipo veicolo</span>
-              <select className="app-input w-full" value={form.tipo_veicolo} onChange={(e) => onFormSet({ ...form, tipo_veicolo: e.target.value })}><option value="auto">Auto</option><option value="moto">Moto</option></select>
+              <select className="app-input w-full" value={form.tipo_veicolo} onChange={(e) => onFormSet({ ...form, tipo_veicolo: e.target.value })}>
+                <option value="auto">Auto</option>
+                <option value="moto">Moto</option>
+              </select>
             </label>
             <label className="space-y-1">
               <span className="text-sm font-medium">Tipo energia</span>
-              <select className="app-input w-full" value={form.tipo_energia} onChange={(e) => onFormSet({ ...form, tipo_energia: e.target.value })}><option value="benzina">Benzina</option><option value="diesel">Diesel</option><option value="elettrico">Elettrico</option></select>
+              <select className="app-input w-full" value={form.tipo_energia} onChange={(e) => onFormSet({ ...form, tipo_energia: e.target.value })}>
+                <option value="benzina">Benzina</option>
+                <option value="diesel">Diesel</option>
+                <option value="elettrico">Elettrico</option>
+              </select>
             </label>
             <label className="space-y-1">
               <span className="text-sm font-medium">Unità predefinita</span>
-              <select className="app-input w-full" value={form.unita_default} onChange={(e) => onFormSet({ ...form, unita_default: e.target.value })}><option value="L">L</option><option value="kWh">kWh</option></select>
+              <select className="app-input w-full" value={form.unita_default} onChange={(e) => onFormSet({ ...form, unita_default: e.target.value })}>
+                <option value="L">L</option>
+                <option value="kWh">kWh</option>
+              </select>
             </label>
             <label className="space-y-1 sm:col-span-2">
               <span className="text-sm font-medium">Note</span>
