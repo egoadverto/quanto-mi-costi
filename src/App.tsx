@@ -152,6 +152,25 @@ function App() {
     await loadData();
   }
 
+  function updateRForm(field: keyof typeof rForm, value: string) {
+    const nextForm = { ...rForm, [field]: value };
+    if (field === 'quantita' || field === 'prezzo_unitario') {
+      const quantita = Number(nextForm.quantita);
+      const prezzoUnitario = Number(nextForm.prezzo_unitario);
+      if (!Number.isNaN(quantita) && !Number.isNaN(prezzoUnitario)) {
+        nextForm.costo_totale = (Math.round(quantita * prezzoUnitario * 100) / 100).toFixed(2);
+      }
+    }
+    if (field === 'costo_totale') {
+      const quantita = Number(nextForm.quantita);
+      const costoTotale = Number(nextForm.costo_totale);
+      if (quantita > 0 && !Number.isNaN(costoTotale)) {
+        nextForm.prezzo_unitario = (Math.round((costoTotale / quantita) * 10000) / 10000).toFixed(4);
+      }
+    }
+    setRForm(nextForm);
+  }
+
   const dashboard = useMemo(() => {
     const anno = new Date().getFullYear();
     const rAnno = rifornimenti.filter((r) => new Date(r.data).getFullYear() === anno);
