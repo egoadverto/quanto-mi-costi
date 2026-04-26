@@ -152,6 +152,25 @@ function App() {
     await loadData();
   }
 
+  function updateRForm(field: keyof typeof rForm, value: string) {
+    const nextForm = { ...rForm, [field]: value };
+    if (field === 'quantita' || field === 'prezzo_unitario') {
+      const quantita = Number(nextForm.quantita);
+      const prezzoUnitario = Number(nextForm.prezzo_unitario);
+      if (!Number.isNaN(quantita) && !Number.isNaN(prezzoUnitario)) {
+        nextForm.costo_totale = (Math.round(quantita * prezzoUnitario * 100) / 100).toFixed(2);
+      }
+    }
+    if (field === 'costo_totale') {
+      const quantita = Number(nextForm.quantita);
+      const costoTotale = Number(nextForm.costo_totale);
+      if (quantita > 0 && !Number.isNaN(costoTotale)) {
+        nextForm.prezzo_unitario = (Math.round((costoTotale / quantita) * 10000) / 10000).toFixed(4);
+      }
+    }
+    setRForm(nextForm);
+  }
+
   const dashboard = useMemo(() => {
     const anno = new Date().getFullYear();
     const rAnno = rifornimenti.filter((r) => new Date(r.data).getFullYear() === anno);
@@ -232,19 +251,27 @@ function App() {
     return (
       <main className="min-h-screen bg-slate-50 text-slate-900">
         <div className="mx-auto max-w-6xl space-y-6 px-4 py-6">
-          <header className="space-y-1">
-            <h1 className="text-3xl font-bold">Ma quanto mi costi?!</h1>
-            <p className="text-sm text-slate-600">Costi, rifornimenti e report dei tuoi veicoli</p>
+          <header className="space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight">Ma quanto mi costi?!</h1>
+            <p className="text-sm text-slate-600">App personale per tracciare costi, rifornimenti e spese dei tuoi veicoli.</p>
           </header>
           <section className="mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="mb-3 text-xl font-semibold">Accesso</h2>
-            <form onSubmit={login} className="space-y-3">
-              <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              <input className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <h2 className="mb-4 text-xl font-semibold">Accedi</h2>
+            <form onSubmit={login} className="space-y-4">
+              <div className="space-y-1">
+                <label htmlFor="login-email" className="text-sm font-medium text-slate-700">Email</label>
+                <input id="login-email" className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="email" placeholder="nome@esempio.it" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <p className="text-xs text-slate-500">Usa l&apos;email collegata al tuo account.</p>
+              </div>
+              <div className="space-y-1">
+                <label htmlFor="login-password" className="text-sm font-medium text-slate-700">Password</label>
+                <input id="login-password" className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" type="password" placeholder="Inserisci la tua password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <p className="text-xs text-slate-500">La password non viene mostrata durante la digitazione.</p>
+              </div>
               <button className="w-full rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white" type="submit">Accedi</button>
             </form>
-            {error && <p className="mt-3 rounded-xl border border-red-200 bg-red-50 p-2 text-sm text-red-700">{error}</p>}
           </section>
+          {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
       </main>
     );
