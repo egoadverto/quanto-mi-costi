@@ -41,17 +41,16 @@ function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm =
           const eff = precedente && r.quantita > 0 ? (r.odometro - precedente.odometro) / r.quantita : null;
           return (
             <article key={r.id} className="panel-highlight p-4">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <div className="space-y-1 text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="text-sm">
                   <p className="font-semibold">{veicoloNome}</p>
-                  <p className="text-[var(--text-secondary)]">{r.data}</p>
-                  <p>{r.quantita} {r.unita} · {r.prezzo_unitario.toFixed(4)} €/u</p>
-                  <p>Costo totale: <strong>{euro.format(r.costo_totale)}</strong></p>
-                  <p className="text-[var(--text-secondary)]">Efficienza: {eff ? `${eff.toFixed(2)} ${r.unita === 'kWh' ? 'km/kWh' : 'km/L'}` : 'N/D'}</p>
+                  <p className="text-[var(--text-secondary)]">
+                    {r.data} · {r.quantita} {r.unita} · {r.prezzo_unitario.toFixed(4)} €/u · Totale {euro.format(r.costo_totale)} · Efficienza {eff ? `${eff.toFixed(2)} ${r.unita === 'kWh' ? 'km/kWh' : 'km/L'}` : 'N/D'}
+                  </p>
                 </div>
-                <div className="space-y-2">
+                <div className="flex items-center gap-2">
                   <button className="btn-secondary" onClick={() => void onUpdateCosto(r.id, r.costo_totale)}>Modifica</button>
-                  <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold block" onClick={() => void onDelete(r.id)}>Elimina</button>
+                  <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold" onClick={() => void onDelete(r.id)}>Elimina</button>
                 </div>
               </div>
             </article>
