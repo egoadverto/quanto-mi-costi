@@ -29,7 +29,7 @@ type SpeseProps = {
 function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm = true, showList = true, onSubmit, onFormSet, onUpdateImporto, onDelete }: SpeseProps) {
   return (
     <section id="spese" className="space-y-3">
-      <h2 className="text-xl font-semibold text-[#12343b]">Spese</h2>
+      <h2 className="text-xl font-semibold">Spese</h2>
       {showForm && <div className="panel-highlight">
         <form onSubmit={onSubmit} className="grid gap-3 sm:grid-cols-2">
           <select className="field-highlight" value={form.veicolo_id} onChange={(e) => onFormSet({ ...form, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
@@ -48,7 +48,7 @@ function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div className="space-y-1 text-sm">
                 <p className="font-semibold">{s.categoria || 'altro'} · {nomeVeicoloById[s.veicolo_id] ?? 'Veicolo'}</p>
-                <p className="text-[#12343b]/70">{s.data}</p>
+                <p className="text-[var(--text-secondary)]">{s.data}</p>
                 <p>Importo: <strong>{euro.format(s.importo)}</strong></p>
               </div>
               <div className="space-y-2">

@@ -236,18 +236,6 @@ function App() {
         {currentPage === 'riepilogo' && <>
           <Dashboard dashboard={dashboard} />
           <Report reportData={reportData} efficienze={dashboard.efficienze} />
-          <Veicoli
-            veicoli={veicoli}
-            form={vForm}
-            isEditing={Boolean(editingVeicoloId)}
-            showForm={false}
-            showList
-            onSubmit={saveVeicolo}
-            onFormSet={setVForm}
-            onCancelEdit={cancelEditVeicolo}
-            onDelete={async (id) => deleteItem('veicoli', id)}
-            onEdit={startEditVeicolo}
-          />
         </>}
 
         {currentPage === 'inserimento' && <>
@@ -256,7 +244,7 @@ function App() {
             form={vForm}
             isEditing={Boolean(editingVeicoloId)}
             showForm
-            showList={false}
+            showList
             onSubmit={saveVeicolo}
             onFormSet={setVForm}
             onCancelEdit={cancelEditVeicolo}
@@ -324,18 +312,6 @@ function App() {
             onFormSet={setSForm}
             onUpdateImporto={updateSpesaImporto}
             onDelete={async (id) => deleteItem('spese', id)}
-          />
-          <Veicoli
-            veicoli={storicoVeicoloId ? veicoli.filter((v) => v.id === storicoVeicoloId) : veicoli}
-            form={vForm}
-            isEditing={Boolean(editingVeicoloId)}
-            showForm={false}
-            showList
-            onSubmit={saveVeicolo}
-            onFormSet={setVForm}
-            onCancelEdit={cancelEditVeicolo}
-            onDelete={async (id) => deleteItem('veicoli', id)}
-            onEdit={startEditVeicolo}
           />
         </>}
       </div>
