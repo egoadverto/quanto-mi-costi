@@ -323,29 +323,29 @@ const rifornimentiFiltrati = useMemo(() => {
 {currentPage === 'storico' && <>
           <section className="panel-highlight p-5 space-y-4">
             <h2 className="text-xl font-semibold">Filtri</h2>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <label className="space-y-1">
-                <span className="text-xs font-medium text-[var(--text-secondary)]">Veicolo</span>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-medium text-[var(--text-secondary)]">Veicolo</span>
                 <select className="app-input" value={storicoVeicoloId} onChange={(e) => setStoricoVeicoloId(e.target.value)}>
                   <option value="">Tutti i veicoli</option>
                   {veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}
                 </select>
-              </label>
-              <label className="space-y-1">
-                <span className="text-xs font-medium text-[var(--text-secondary)]">Data inizio</span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-medium text-[var(--text-secondary)]">Data inizio</span>
                 <input className="app-input" type="date" value={filtroDataInizio} onChange={(e) => setFiltroDataInizio(e.target.value)} />
-              </label>
-              <label className="space-y-1">
-                <span className="text-xs font-medium text-[var(--text-secondary)]">Data fine</span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-medium text-[var(--text-secondary)]">Data fine</span>
                 <input className="app-input" type="date" value={filtroDataFine} onChange={(e) => setFiltroDataFine(e.target.value)} />
-              </label>
-              <label className="space-y-1">
-                <span className="text-xs font-medium text-[var(--text-secondary)]">Categoria</span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-medium text-[var(--text-secondary)]">Categoria</span>
                 <select className="app-input" value={filtroCategoria} onChange={(e) => setFiltroCategoria(e.target.value)}>
                   <option value="">Tutte le categorie</option>
                   {categorieSpesa.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
-              </label>
+              </div>
             </div>
             <button className="btn-secondary text-sm" onClick={resetFiltri}>Reset filtri</button>
           </section>
