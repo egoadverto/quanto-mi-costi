@@ -191,6 +191,48 @@ const [currentPage, setCurrentPage] = useState<'riepilogo' | 'inserimento' | 'st
     setRForm((currentForm) => calculateRifornimentoForm(currentForm, field, value));
   }
 
+  function escapeCSV(value: string | null | undefined): string {
+    const str = value ?? '';
+    if (str.includes(';') || str.includes('"') || str.includes('\n')) {
+      return `"${str.replace(/"/g, '""')}"`;
+    }
+    return str;
+  }
+
+  function downloadCSV(content: string, filename: string) {
+    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportVeicoli() {
+    const header = 'nome;marca;modello;tipo_veicolo;tipo_energia;unita_default;odometro_iniziale;data_acquisto;note';
+    const rows = veicoli.map(v =>
+      [escapeCSV(v.nome), escapeCSV(v.marca), escapeCSV(v.modello), escapeCSV(v.tipo_veicolo), escapeCSV(v.tipo_energia), escapeCSV(v.unita_default), v.odometro_iniziale ?? '', v.data_acquisto ?? '', escapeCSV(v.note)].join(';')
+    );
+    downloadCSV([header, ...rows].join('\n'), 'veicoli.csv');
+  }
+
+  function exportRifornimenti() {
+    const header = 'veicolo_nome;data;odometro;quantita;unita;prezzo_unitario;costo_totale;fornitore;note';
+    const rows = rifornimenti.map(r =>
+      [escapeCSV(nomeVeicoloById[r.veicolo_id] || ''), r.data, r.odometro, r.quantita, r.unita ?? '', r.prezzo_unitario, r.costo_totale, escapeCSV(r.fornitore), escapeCSV(r.note)].join(';')
+    );
+    downloadCSV([header, ...rows].join('\n'), 'rifornimenti.csv');
+  }
+
+  function exportSpese() {
+    const header = 'veicolo_nome;data;categoria;descrizione;importo;odometro;note';
+    const rows = spese.map(s =>
+      [escapeCSV(nomeVeicoloById[s.veicolo_id] || ''), s.data, escapeCSV(s.categoria), escapeCSV(s.descrizione), s.importo, s.odometro ?? '', escapeCSV(s.note)].join(';')
+    );
+    downloadCSV([header, ...rows].join('\n'), 'spese.csv');
+  }
+
   const dashboard = useMemo(() => calculateDashboard(veicoli, rifornimenti, spese), [veicoli, rifornimenti, spese]);
   const nomeVeicoloById = useMemo(() => Object.fromEntries(veicoli.map((v) => [v.id, v.nome])), [veicoli]);
   const reportData = useMemo(() => calculateReport(veicoli, rifornimenti, spese, nomeVeicoloById), [nomeVeicoloById, rifornimenti, spese, veicoli]);
@@ -306,7 +348,7 @@ const rifornimentiFiltrati = useMemo(() => {
             onUpdateFull={updateSpesaFull}
             onDelete={async (id) => deleteItem('spese', id)}
           />
-          <Veicoli
+<Veicoli
             veicoli={veicoli}
             form={vForm}
             isEditing={Boolean(editingVeicoloId)}
@@ -318,6 +360,14 @@ const rifornimentiFiltrati = useMemo(() => {
             onDelete={async (id) => deleteItem('veicoli', id)}
             onEdit={startEditVeicolo}
           />
+          <section className="panel-highlight p-5 space-y-4">
+            <h2 className="text-xl font-semibold">Esportazione dati</h2>
+            <div className="flex flex-wrap gap-3">
+              <button className="btn-secondary" onClick={exportVeicoli}>Esporta veicoli CSV</button>
+              <button className="btn-secondary" onClick={exportRifornimenti}>Esporta rifornimenti CSV</button>
+              <button className="btn-secondary" onClick={exportSpese}>Esporta spese CSV</button>
+            </div>
+          </section>
         </>}
 
 {currentPage === 'storico' && <>
