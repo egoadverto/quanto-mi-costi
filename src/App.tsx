@@ -34,6 +34,7 @@ function App() {
   const [sForm, setSForm] = useState(initialSForm);
   const [currentPage, setCurrentPage] = useState<'riepilogo' | 'inserimento' | 'storico'>('riepilogo');
   const [storicoVeicoloId, setStoricoVeicoloId] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -50,6 +51,7 @@ function App() {
       const page = window.location.hash.replace('#', '');
       if (page === 'inserimento' || page === 'storico' || page === 'riepilogo') setCurrentPage(page);
       else setCurrentPage('riepilogo');
+      setMobileMenuOpen(false);
     };
 
     readPageFromHash();
@@ -222,12 +224,25 @@ function App() {
               <h1 className="text-3xl font-bold">Ma quanto mi costi?!</h1>
               <p className="text-sm text-[var(--text-secondary)]">Costi, rifornimenti e report dei tuoi veicoli</p>
             </div>
-            <button className="app-button-primary rounded-xl px-4 py-2 text-sm" onClick={logout}>Logout</button>
+            <div className="flex items-center gap-2 self-end sm:self-auto">
+              <button
+                className="app-nav-link rounded-xl px-3 py-2 text-sm font-semibold sm:hidden"
+                type="button"
+                onClick={() => setMobileMenuOpen((open) => !open)}
+                aria-label="Apri menu pagine"
+                aria-expanded={mobileMenuOpen}
+              >
+                ☰ Menu
+              </button>
+              <button className="app-button-primary rounded-xl px-4 py-2 text-sm" onClick={logout}>Logout</button>
+            </div>
           </div>
-          <nav className="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-3">
+          <nav className={`mt-4 ${mobileMenuOpen ? 'block' : 'hidden'} text-sm sm:block`}>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             <a href="#riepilogo" className={`app-nav-link rounded-xl px-3 py-2 text-center font-semibold ${currentPage === 'riepilogo' ? 'app-nav-link-active' : ''}`}>Riepilogo</a>
             <a href="#inserimento" className={`app-nav-link rounded-xl px-3 py-2 text-center font-semibold ${currentPage === 'inserimento' ? 'app-nav-link-active' : ''}`}>Inserimento dati</a>
             <a href="#storico" className={`app-nav-link rounded-xl px-3 py-2 text-center font-semibold ${currentPage === 'storico' ? 'app-nav-link-active' : ''}`}>Riepilogo inserimenti</a>
+            </div>
           </nav>
         </header>
 
