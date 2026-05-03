@@ -136,19 +136,46 @@ function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm =
             return (
               <article key={r.id} className="panel-highlight p-4 space-y-3">
                 <div className="grid gap-2 sm:grid-cols-3">
-                  <select className="app-input w-full text-sm" value={editForm.veicolo_id} onChange={(e) => handleEditFormChange('veicolo_id', e.target.value)} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
-                  <input className="app-input w-full text-sm" type="date" value={editForm.data} onChange={(e) => handleEditFormChange('data', e.target.value)} required />
-                  <input className="app-input w-full text-sm" type="number" placeholder="Odometro" value={editForm.odometro} onChange={(e) => handleEditFormChange('odometro', e.target.value)} required />
+                  <label className="space-y-1">
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">Veicolo</span>
+                    <select className="app-input w-full text-sm" value={editForm.veicolo_id} onChange={(e) => handleEditFormChange('veicolo_id', e.target.value)} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
+                  </label>
+                  <label className="space-y-1">
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">Data</span>
+                    <input className="app-input w-full text-sm" type="date" value={editForm.data} onChange={(e) => handleEditFormChange('data', e.target.value)} required />
+                  </label>
+                  <label className="space-y-1">
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">Odometro</span>
+                    <input className="app-input w-full text-sm" type="number" placeholder="Odometro" value={editForm.odometro} onChange={(e) => handleEditFormChange('odometro', e.target.value)} required />
+                  </label>
                 </div>
                 <div className="grid gap-2 sm:grid-cols-2">
-                  <input className="app-input w-full text-sm" type="number" step="0.01" placeholder="Quantità" value={editForm.quantita} onChange={(e) => handleEditFormChange('quantita', e.target.value)} required />
-                  <select className="app-input w-full text-sm" value={editForm.unita} onChange={(e) => handleEditFormChange('unita', e.target.value)}><option value="L">L</option><option value="kWh">kWh</option></select>
-                  <input className="app-input w-full text-sm" type="number" step="0.0001" placeholder="Prezzo €/u" value={editForm.prezzo_unitario} onChange={(e) => handleEditFormChange('prezzo_unitario', e.target.value)} required />
-                  <input className="app-input w-full text-sm" type="number" step="0.01" placeholder="Totale €" value={editForm.costo_totale} onChange={(e) => handleEditFormChange('costo_totale', e.target.value)} required />
+                  <label className="space-y-1">
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">Quantita</span>
+                    <input className="app-input w-full text-sm" type="number" step="0.01" placeholder="Quantità" value={editForm.quantita} onChange={(e) => handleEditFormChange('quantita', e.target.value)} required />
+                  </label>
+                  <label className="space-y-1">
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">Unita</span>
+                    <select className="app-input w-full text-sm" value={editForm.unita} onChange={(e) => handleEditFormChange('unita', e.target.value)}><option value="L">L</option><option value="kWh">kWh</option></select>
+                  </label>
+                  <label className="space-y-1">
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">Prezzo unitario</span>
+                    <input className="app-input w-full text-sm" type="number" step="0.0001" placeholder="Prezzo €/u" value={editForm.prezzo_unitario} onChange={(e) => handleEditFormChange('prezzo_unitario', e.target.value)} required />
+                  </label>
+                  <label className="space-y-1">
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">Totale</span>
+                    <input className="app-input w-full text-sm" type="number" step="0.01" placeholder="Totale €" value={editForm.costo_totale} onChange={(e) => handleEditFormChange('costo_totale', e.target.value)} required />
+                  </label>
                 </div>
                 <div className="grid gap-2 sm:grid-cols-2">
-                  <input className="app-input w-full text-sm" placeholder="Fornitore" value={editForm.fornitore} onChange={(e) => handleEditFormChange('fornitore', e.target.value)} />
-                  <input className="app-input w-full text-sm" placeholder="Note" value={editForm.note} onChange={(e) => handleEditFormChange('note', e.target.value)} />
+                  <label className="space-y-1">
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">Fornitore</span>
+                    <input className="app-input w-full text-sm" placeholder="Fornitore" value={editForm.fornitore} onChange={(e) => handleEditFormChange('fornitore', e.target.value)} />
+                  </label>
+                  <label className="space-y-1">
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">Note</span>
+                    <input className="app-input w-full text-sm" placeholder="Note" value={editForm.note} onChange={(e) => handleEditFormChange('note', e.target.value)} />
+                  </label>
                 </div>
                 <div className="flex items-center gap-2">
                   <button className="btn-primary text-sm" onClick={() => saveEdit(r.id)}>Salva</button>
