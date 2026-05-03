@@ -60,6 +60,11 @@ function App() {
       supabase.from('rifornimenti').select('*').order('data', { ascending: false }),
       supabase.from('spese').select('*').order('data', { ascending: false })
     ]);
+    const loadError = v.error || r.error || s.error;
+    if (loadError) {
+      setError(loadError.message);
+      return;
+    }
     if (v.data) setVeicoli(v.data as Veicolo[]);
     if (r.data) setRifornimenti(r.data as Rifornimento[]);
     if (s.data) setSpese(s.data as Spesa[]);
@@ -128,7 +133,11 @@ function App() {
   }
 
   async function deleteItem(tabella: 'veicoli' | 'rifornimenti' | 'spese', id: string) {
-    await supabase.from(tabella).delete().eq('id', id);
+    const { error: deleteError } = await supabase.from(tabella).delete().eq('id', id);
+    if (deleteError) {
+      setError(deleteError.message);
+      return;
+    }
     await loadData();
   }
 
