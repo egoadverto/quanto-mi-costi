@@ -156,14 +156,22 @@ function App() {
 
   async function updateRifornimentoFull(id: string, data: { veicolo_id: string; data: string; odometro: number; quantita: number; unita: string; prezzo_unitario: number; costo_totale: number; fornitore: string | null; note: string | null }) {
     const { error } = await supabase.from('rifornimenti').update(data).eq('id', id);
-    if (error) return setError(error.message);
+    if (error) {
+      setError(error.message);
+      return false;
+    }
     await loadData();
+    return true;
   }
 
   async function updateSpesaFull(id: string, data: { veicolo_id: string; data: string; categoria: string; descrizione: string | null; importo: number; odometro: number | null; note: string | null }) {
     const { error } = await supabase.from('spese').update(data).eq('id', id);
-    if (error) return setError(error.message);
+    if (error) {
+      setError(error.message);
+      return false;
+    }
     await loadData();
+    return true;
   }
 
   function updateRForm(field: keyof RifornimentoForm, value: string) {

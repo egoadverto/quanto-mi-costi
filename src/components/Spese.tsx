@@ -32,7 +32,7 @@ type SpeseProps = {
   showList?: boolean;
   onSubmit: (e: FormEvent) => Promise<void>;
   onFormSet: (nextForm: SpeseForm) => void;
-  onUpdateFull: (id: string, data: { veicolo_id: string; data: string; categoria: string; descrizione: string | null; importo: number; odometro: number | null; note: string | null }) => Promise<void>;
+  onUpdateFull: (id: string, data: { veicolo_id: string; data: string; categoria: string; descrizione: string | null; importo: number; odometro: number | null; note: string | null }) => Promise<boolean>;
   onDelete: (id: string) => Promise<void>;
 };
 
@@ -59,7 +59,7 @@ function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm
   };
 
   const saveEdit = async (id: string) => {
-    await onUpdateFull(id, {
+    const updated = await onUpdateFull(id, {
       veicolo_id: editForm.veicolo_id,
       data: editForm.data,
       categoria: editForm.categoria,
@@ -68,7 +68,7 @@ function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm
       odometro: editForm.odometro.trim() === '' ? null : Number(editForm.odometro),
       note: editForm.note.trim() || null
     });
-    cancelEdit();
+    if (updated) cancelEdit();
   };
   return (
     <section id="spese" className="space-y-3">

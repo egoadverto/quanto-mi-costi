@@ -24,7 +24,7 @@ type RifornimentiProps = {
   onSubmit: (e: FormEvent) => Promise<void>;
   onFormChange: (field: keyof RifornimentoForm, value: string) => void;
   onQuickSet: (nextForm: RifornimentoForm) => void;
-  onUpdateFull: (id: string, data: { veicolo_id: string; data: string; odometro: number; quantita: number; unita: string; prezzo_unitario: number; costo_totale: number; fornitore: string | null; note: string | null }) => Promise<void>;
+  onUpdateFull: (id: string, data: { veicolo_id: string; data: string; odometro: number; quantita: number; unita: string; prezzo_unitario: number; costo_totale: number; fornitore: string | null; note: string | null }) => Promise<boolean>;
   onDelete: (id: string) => Promise<void>;
 };
 
@@ -78,7 +78,7 @@ function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm =
   };
 
   const saveEdit = async (id: string) => {
-    await onUpdateFull(id, {
+    const updated = await onUpdateFull(id, {
       veicolo_id: editForm.veicolo_id,
       data: editForm.data,
       odometro: Number(editForm.odometro),
@@ -89,7 +89,7 @@ function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm =
       fornitore: editForm.fornitore.trim() || null,
       note: editForm.note.trim() || null
     });
-    cancelEdit();
+    if (updated) cancelEdit();
   };
   return (
     <section id="rifornimenti" className="space-y-3">
