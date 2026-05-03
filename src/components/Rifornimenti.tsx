@@ -146,6 +146,10 @@ function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm =
                   <input className="app-input w-full text-sm" type="number" step="0.0001" placeholder="Prezzo €/u" value={editForm.prezzo_unitario} onChange={(e) => handleEditFormChange('prezzo_unitario', e.target.value)} required />
                   <input className="app-input w-full text-sm" type="number" step="0.01" placeholder="Totale €" value={editForm.costo_totale} onChange={(e) => handleEditFormChange('costo_totale', e.target.value)} required />
                 </div>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <input className="app-input w-full text-sm" placeholder="Fornitore" value={editForm.fornitore} onChange={(e) => handleEditFormChange('fornitore', e.target.value)} />
+                  <input className="app-input w-full text-sm" placeholder="Note" value={editForm.note} onChange={(e) => handleEditFormChange('note', e.target.value)} />
+                </div>
                 <div className="flex items-center gap-2">
                   <button className="btn-primary text-sm" onClick={() => saveEdit(r.id)}>Salva</button>
                   <button className="btn-secondary text-sm" onClick={cancelEdit}>Annulla</button>
