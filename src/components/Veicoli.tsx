@@ -37,8 +37,28 @@ function Veicoli({ veicoli, form, isEditing, showForm = true, showList = true, o
   return (
     <section id="veicoli" className="space-y-3">
       <h2 className="text-xl font-semibold">Veicoli</h2>
-      <div className="grid gap-4 lg:grid-cols-2">
-        {showForm && <div className="panel-highlight p-5">
+<div className="grid gap-4 lg:grid-cols-2">
+        {showList && <div className="panel-highlight p-5 order-2 sm:order-1">
+          <h3 className="mb-3 font-semibold">Elenco veicoli</h3>
+          <ul className="space-y-2">
+            {veicoli.map((v) => (
+              <li key={v.id} className="rounded-xl border p-3" style={{ borderColor: 'var(--border)' }}>
+                <div className="flex items-start justify-between gap-2">
+                  <div className="space-y-1">
+                    <span className="text-sm font-semibold">{v.nome}</span>
+                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Marca: {v.marca || '-'}</p>
+                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Modello: {v.modello || '-'}</p>
+                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Data acquisto: {formatDate(v.data_acquisto)}</p>
+                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Km all'acquisto: {v.odometro_iniziale ?? '-'}</p>
+                  </div>
+                  <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold" onClick={() => void onDelete(v.id)}>Elimina</button>
+                </div>
+                <button className="btn-secondary mt-2" onClick={() => onEdit(v.id)}>Modifica</button>
+              </li>
+            ))}
+          </ul>
+        </div>}
+        {showForm && <div className="panel-highlight p-5 order-1 sm:order-2">
           <h3 className="mb-3 font-semibold">{isEditing ? 'Modifica veicolo' : 'Nuovo veicolo'}</h3>
           <form onSubmit={onSubmit} className="grid gap-3 sm:grid-cols-2">
             <label className="space-y-1">
@@ -81,28 +101,8 @@ function Veicoli({ veicoli, form, isEditing, showForm = true, showList = true, o
             <div className="sm:col-span-2 flex flex-wrap gap-2">
               <button className="app-button-primary rounded-xl px-4 py-2 text-sm sm:w-fit" type="submit">{isEditing ? 'Aggiorna veicolo' : 'Salva veicolo'}</button>
               {isEditing && <button className="btn-secondary" type="button" onClick={onCancelEdit}>Annulla modifica</button>}
-            </div>
+</div>
           </form>
-        </div>}
-        {showList && <div className="panel-highlight p-5">
-          <h3 className="mb-3 font-semibold">Elenco veicoli</h3>
-          <ul className="space-y-2">
-            {veicoli.map((v) => (
-              <li key={v.id} className="rounded-xl border p-3" style={{ borderColor: 'var(--border)' }}>
-                <div className="flex items-start justify-between gap-2">
-                  <div className="space-y-1">
-                    <span className="text-sm font-semibold">{v.nome}</span>
-                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Marca: {v.marca || '-'}</p>
-                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Modello: {v.modello || '-'}</p>
-                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Data acquisto: {formatDate(v.data_acquisto)}</p>
-                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Km all'acquisto: {v.odometro_iniziale ?? '-'}</p>
-                  </div>
-                  <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold" onClick={() => void onDelete(v.id)}>Elimina</button>
-                </div>
-                <button className="btn-secondary mt-2" onClick={() => onEdit(v.id)}>Modifica</button>
-              </li>
-            ))}
-          </ul>
         </div>}
       </div>
     </section>
