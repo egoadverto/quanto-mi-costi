@@ -5,8 +5,6 @@ type ReportProps = {
     perVeicolo: [string, number][];
     perCategoria: [string, number][];
     perMese: [string, number][];
-    maxVeicolo: number;
-    maxCategoria: number;
     maxMese: number;
   };
   efficienze: { veicolo: string; valore: number | null; unita: string }[];

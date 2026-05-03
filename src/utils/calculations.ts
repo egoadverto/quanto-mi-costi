@@ -152,8 +152,6 @@ export const calculateReport = (veicoli: Veicolo[], rifornimenti: Rifornimento[]
     perVeicolo,
     perCategoria,
     perMese,
-    maxVeicolo: perVeicolo[0]?.[1] ?? 1,
-    maxCategoria: perCategoria[0]?.[1] ?? 1,
     maxMese
   };
 };
