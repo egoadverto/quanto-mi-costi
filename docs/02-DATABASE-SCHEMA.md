@@ -14,7 +14,7 @@
 - data_acquisto (DATE)
 - km_iniziali (NUMERIC)
 - note (TEXT)
-- data_creazione (TIMESTAMP)
+- data_creazione (DATE, default current_date)
 
 ---
 
@@ -51,4 +51,11 @@
 ## Regole
 - Tutte le tabelle hanno user_id
 - FK obbligatorie su veicolo
-- No cascade delete
+- Le FK verso `auth.users(id)` e `veicoli(id)` usano `on delete cascade`
+- Se un utente viene eliminato, i suoi record vengono eliminati
+- Se un veicolo viene eliminato, rifornimenti e spese collegati vengono eliminati
+
+## Nota campi odometro
+- In `veicoli` esistono sia `odometro_iniziale` sia `km_iniziali`
+- La UI attuale usa `odometro_iniziale`
+- `km_iniziali` e presente nello schema ma al momento non e usato nel frontend

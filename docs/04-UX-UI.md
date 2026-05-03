@@ -1,37 +1,32 @@
 # UX / UI Blueprint
 
-## Schermate
+## Macro-pagine (navigazione attuale)
 
-### Dashboard
+### Riepilogo
+- Dashboard
 - Totale anno
 - Costo mensile
 - Costo/km
 - Ultimo rifornimento
 - Ultima spesa
-
-### Rifornimenti
-- Form inserimento
-- Lista storica
-- Modifica costo
-
-### Spese
-- Form inserimento
-- Lista
-- Filtro categoria
-
-### Veicoli
-- Creazione
-- Modifica completa
-- Lista
-
-### Report
+- Report
 - Costo per veicolo
 - Costo per categoria
 - Andamento mensile
 
+### Inserimento dati
+- Rifornimenti: form inserimento
+- Spese: form inserimento
+- Veicoli: creazione/modifica completa + lista
+
+### Riepilogo inserimenti
+- Filtro per veicolo
+- Rifornimenti: lista storica con modifica
+- Spese: lista storica con modifica
+
 ## Navigazione
 
-Dashboard | Rifornimenti | Spese | Report | Veicoli
+Riepilogo | Inserimento dati | Riepilogo inserimenti
 
 ## Regole UX
 - UI semplice
