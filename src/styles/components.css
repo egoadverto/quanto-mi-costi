@@ -12,7 +12,7 @@
 
 .app-input {
   background-color: var(--bg-card);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   color: var(--text-primary);
   padding: var(--space-sm) var(--space-md);
   border-radius: 0.75rem;
@@ -47,13 +47,13 @@
 .panel-highlight {
   @apply rounded-2xl shadow-sm;
   background-color: var(--bg-card);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
 }
 
 .field-default {
   @apply w-full text-sm focus:outline-none focus:ring-2;
   background-color: var(--bg-card);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   color: var(--text-primary);
   border-radius: 0.75rem;
   padding: var(--space-sm) var(--space-md);
@@ -89,7 +89,7 @@
 .stat-card {
   @apply rounded-2xl shadow-sm;
   background-color: var(--bg-card);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   padding: var(--space-lg);
 }
 
@@ -99,6 +99,6 @@
 }
 
 .stat-value {
-  @apply text-lg font-semibold;
-  color: var(--text-primary);
+  @apply text-xl font-bold;
+  color: var(--accent);
 }

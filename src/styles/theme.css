@@ -1,17 +1,17 @@
 :root {
-  --bg-main: #023859;
-  --bg-card: #035b86;
-  --bg-hover: #0378a6;
+  --bg-main: #012a45;
+  --bg-card: #044a6e;
+  --bg-hover: #056a91;
 
-  --border: #0378a6;
+  --border: #0588bd;
 
-  --text-primary: #f5f8fa;
-  --text-secondary: #cfe3ed;
+  --text-primary: #ffffff;
+  --text-secondary: #b8d4e6;
 
-  --accent: #f29727;
-  --accent-strong: #f27507;
+  --accent: #f9a825;
+  --accent-strong: #ff8f00;
 
-  --danger: #d95407;
+  --danger: #ff5722;
 
   --space-sm: 0.625rem;
   --space-md: 0.875rem;
