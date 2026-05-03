@@ -233,6 +233,52 @@ const [currentPage, setCurrentPage] = useState<'riepilogo' | 'inserimento' | 'st
     downloadCSV([header, ...rows].join('\n'), 'spese.csv');
   }
 
+  function exportBackup() {
+    const backup = {
+      versione: 1,
+      dataEsportazione: new Date().toISOString(),
+      veicoli: veicoli.map(v => ({
+        nome: v.nome,
+        marca: v.marca,
+        modello: v.modello,
+        tipo_veicolo: v.tipo_veicolo,
+        tipo_energia: v.tipo_energia,
+        unita_default: v.unita_default,
+        odometro_iniziale: v.odometro_iniziale,
+        data_acquisto: v.data_acquisto,
+        note: v.note
+      })),
+      rifornimenti: rifornimenti.map(r => ({
+        veicolo_nome: nomeVeicoloById[r.veicolo_id] || '',
+        data: r.data,
+        odometro: r.odometro,
+        quantita: r.quantita,
+        unita: r.unita,
+        prezzo_unitario: r.prezzo_unitario,
+        costo_totale: r.costo_totale,
+        fornitore: r.fornitore,
+        note: r.note
+      })),
+      spese: spese.map(s => ({
+        veicolo_nome: nomeVeicoloById[s.veicolo_id] || '',
+        data: s.data,
+        categoria: s.categoria,
+        descrizione: s.descrizione,
+        importo: s.importo,
+        odometro: s.odometro,
+        note: s.note
+      }))
+    };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    const date = new Date().toISOString().slice(0, 10);
+    link.download = `quanto-mi-costi-backup-${date}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   const dashboard = useMemo(() => calculateDashboard(veicoli, rifornimenti, spese), [veicoli, rifornimenti, spese]);
   const nomeVeicoloById = useMemo(() => Object.fromEntries(veicoli.map((v) => [v.id, v.nome])), [veicoli]);
   const reportData = useMemo(() => calculateReport(veicoli, rifornimenti, spese, nomeVeicoloById), [nomeVeicoloById, rifornimenti, spese, veicoli]);
@@ -366,6 +412,7 @@ const rifornimentiFiltrati = useMemo(() => {
               <button className="btn-secondary" onClick={exportVeicoli}>Esporta veicoli CSV</button>
               <button className="btn-secondary" onClick={exportRifornimenti}>Esporta rifornimenti CSV</button>
               <button className="btn-secondary" onClick={exportSpese}>Esporta spese CSV</button>
+              <button className="btn-primary" onClick={exportBackup}>Scarica backup JSON</button>
             </div>
           </section>
         </>}
