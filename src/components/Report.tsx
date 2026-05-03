@@ -113,7 +113,7 @@ function Report({ reportData, efficienze }: ReportProps) {
   return (
     <section id="report" className="space-y-4">
       <h2 className="text-xl font-semibold">Report</h2>
-      <div className="grid gap-4">
+      <div className="grid gap-4 xl:grid-cols-2">
         <SimpleChart title="Costo per veicolo" data={reportData.perVeicolo} colorBase="var(--accent)" emptyMsg="Nessun veicolo con costi" />
         <SimpleChart title="Costo per categoria" data={reportData.perCategoria} colorBase="var(--accent-strong)" emptyMsg="Nessuna spesa registrata" />
         <MonthlyBars data={reportData.perMese} maxValue={reportData.maxMese} />

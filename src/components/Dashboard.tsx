@@ -17,7 +17,7 @@ function Dashboard({ dashboard }: DashboardProps) {
     <section id="dashboard" className="space-y-4">
       <h2 className="text-xl font-semibold">Dashboard</h2>
 
-      <div>
+      <div className="panel-highlight p-5">
         <p className="text-sm font-medium text-[var(--text-secondary)] mb-2">Costi principali</p>
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="stat-card"><p className="stat-label">Totale anno</p><p className="text-2xl font-bold text-[var(--accent)]">{euro.format(dashboard.totaleAnno)}</p></div>
@@ -26,7 +26,7 @@ function Dashboard({ dashboard }: DashboardProps) {
         </div>
       </div>
 
-      <div>
+      <div className="panel-highlight p-5">
         <p className="text-sm font-medium text-[var(--text-secondary)] mb-2">Ultime attività</p>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div className="stat-card p-3"><p className="text-xs text-[var(--text-secondary)]">Veicolo più costoso</p><p className="text-sm font-semibold">{dashboard.costoPerVeicolo ? dashboard.costoPerVeicolo.nome : 'N/D'}</p></div>

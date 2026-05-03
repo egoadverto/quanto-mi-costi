@@ -3,6 +3,24 @@
   color: var(--text-primary);
 }
 
+.app-shell {
+  display: block;
+  min-height: 100vh;
+}
+
+.app-main {
+  min-width: 0;
+}
+
+.app-topbar {
+  margin: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.app-content {
+  padding-bottom: 1.5rem;
+}
+
 .app-card {
   background-color: var(--surface);
   border: 1px solid var(--border);
@@ -141,6 +159,24 @@
   padding: var(--space-md);
 }
 
+.desktop-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.desktop-table th,
+.desktop-table td {
+  text-align: left;
+  padding: 0.65rem 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.875rem;
+}
+
+.desktop-table th {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
 .stat-label {
   color: var(--text-secondary);
   font-size: 0.75rem;
@@ -198,5 +234,35 @@ article {
   .app-nav-link {
     padding: var(--space-md);
     min-height: 44px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-shell {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .app-sidebar {
+    position: sticky;
+    top: 1rem;
+    height: calc(100vh - 2rem);
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 1.25rem;
+    flex-direction: column;
+  }
+
+  .app-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .app-topbar {
+    margin: 0;
   }
 }

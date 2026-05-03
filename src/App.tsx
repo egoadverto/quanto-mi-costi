@@ -703,44 +703,60 @@ const rifornimentiFiltrati = useMemo(() => {
 
   return (
     <main className="min-h-screen app-page">
-      <div className="mx-auto max-w-6xl space-y-6 px-4 py-6">
-        <header className="app-card p-5 shadow-sm">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Ma quanto mi costi?!</h1>
-              <p className="text-sm text-[var(--text-secondary)]">Costi, rifornimenti e report dei tuoi veicoli</p>
-            </div>
-            <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-end">
-              <button
-                className="app-nav-link rounded-xl px-3 py-2 text-sm font-semibold sm:hidden"
-                type="button"
-                onClick={() => setMobileMenuOpen((open) => !open)}
-                aria-label="Apri menu pagine"
-                aria-expanded={mobileMenuOpen}
-              >
-                ☰ Menu
-              </button>
-              <button className="app-button-primary rounded-xl px-4 py-2 text-sm" onClick={logout}>Logout</button>
-            </div>
+      <div className="app-shell">
+        <aside className="app-sidebar hidden lg:flex">
+          <div>
+            <h1 className="text-2xl font-bold">Ma quanto mi costi?!</h1>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">Costi, rifornimenti e report dei tuoi veicoli</p>
           </div>
-          <nav className={`mt-4 ${mobileMenuOpen ? 'block' : 'hidden'} text-sm sm:block`}>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-            <a href="#riepilogo" className={`app-nav-link rounded-xl px-3 py-2 text-center font-semibold ${currentPage === 'riepilogo' ? 'app-nav-link-active' : ''}`}>Riepilogo</a>
-            <a href="#inserimento" className={`app-nav-link rounded-xl px-3 py-2 text-center font-semibold ${currentPage === 'inserimento' ? 'app-nav-link-active' : ''}`}>Inserimento dati</a>
-            <a href="#storico" className={`app-nav-link rounded-xl px-3 py-2 text-center font-semibold ${currentPage === 'storico' ? 'app-nav-link-active' : ''}`}>Riepilogo inserimenti</a>
-            </div>
+          <nav className="mt-6 grid gap-2 text-sm">
+            <a href="#riepilogo" className={`app-nav-link rounded-xl px-3 py-2 font-semibold ${currentPage === 'riepilogo' ? 'app-nav-link-active' : ''}`}>Riepilogo</a>
+            <a href="#inserimento" className={`app-nav-link rounded-xl px-3 py-2 font-semibold ${currentPage === 'inserimento' ? 'app-nav-link-active' : ''}`}>Inserimento dati</a>
+            <a href="#storico" className={`app-nav-link rounded-xl px-3 py-2 font-semibold ${currentPage === 'storico' ? 'app-nav-link-active' : ''}`}>Riepilogo inserimenti</a>
           </nav>
-        </header>
+        </aside>
 
-        {error && <p className="rounded-xl border border-[var(--danger)] bg-[var(--error-container)] p-3 text-sm text-[var(--on-error)]">{error}</p>}
+        <div className="app-main">
+          <header className="app-topbar app-card">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <h2 className="text-xl font-bold lg:hidden">Ma quanto mi costi?!</h2>
+                <h2 className="hidden text-xl font-bold lg:block">Dashboard personale</h2>
+                <p className="text-sm text-[var(--text-secondary)]">Gestione veicoli e costi</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  className="app-nav-link rounded-xl px-3 py-2 text-sm font-semibold lg:hidden"
+                  type="button"
+                  onClick={() => setMobileMenuOpen((open) => !open)}
+                  aria-label="Apri menu pagine"
+                  aria-expanded={mobileMenuOpen}
+                >
+                  ☰ Menu
+                </button>
+                <button className="app-button-primary rounded-xl px-4 py-2 text-sm" onClick={logout}>Logout</button>
+              </div>
+            </div>
+            <nav className={`mt-3 ${mobileMenuOpen ? 'block' : 'hidden'} text-sm lg:hidden`}>
+              <div className="grid grid-cols-1 gap-2">
+                <a href="#riepilogo" className={`app-nav-link rounded-xl px-3 py-2 text-center font-semibold ${currentPage === 'riepilogo' ? 'app-nav-link-active' : ''}`}>Riepilogo</a>
+                <a href="#inserimento" className={`app-nav-link rounded-xl px-3 py-2 text-center font-semibold ${currentPage === 'inserimento' ? 'app-nav-link-active' : ''}`}>Inserimento dati</a>
+                <a href="#storico" className={`app-nav-link rounded-xl px-3 py-2 text-center font-semibold ${currentPage === 'storico' ? 'app-nav-link-active' : ''}`}>Riepilogo inserimenti</a>
+              </div>
+            </nav>
+          </header>
 
-        {currentPage === 'riepilogo' && <>
-          <Dashboard dashboard={dashboard} />
-          <Report reportData={reportData} efficienze={dashboard.efficienze} />
-        </>}
+          <div className="app-content mx-auto w-full max-w-6xl space-y-6 px-4 py-4 lg:px-2 lg:py-2">
+            {error && <p className="rounded-xl border border-[var(--danger)] bg-[var(--error-container)] p-3 text-sm text-[var(--on-error)]">{error}</p>}
 
-        {currentPage === 'inserimento' && <>
-          <Rifornimenti
+            {currentPage === 'riepilogo' && <>
+              <Dashboard dashboard={dashboard} />
+              <Report reportData={reportData} efficienze={dashboard.efficienze} />
+            </>}
+
+            {currentPage === 'inserimento' && <>
+          <div className="grid gap-6 xl:grid-cols-2">
+            <Rifornimenti
             veicoli={veicoli}
             rifornimenti={rifornimenti}
             nomeVeicoloById={nomeVeicoloById}
@@ -753,7 +769,7 @@ const rifornimentiFiltrati = useMemo(() => {
             onUpdateFull={updateRifornimentoFull}
             onDelete={async (id) => deleteItem('rifornimenti', id)}
           />
-          <Spese
+            <Spese
             veicoli={veicoli}
             spese={spese}
             nomeVeicoloById={nomeVeicoloById}
@@ -766,6 +782,7 @@ const rifornimentiFiltrati = useMemo(() => {
             onUpdateFull={updateSpesaFull}
             onDelete={async (id) => deleteItem('spese', id)}
           />
+          </div>
 <Veicoli
             veicoli={veicoli}
             form={vForm}
@@ -932,6 +949,8 @@ const rifornimentiFiltrati = useMemo(() => {
             onDelete={async (id) => deleteItem('spese', id)}
           />
         </>}
+          </div>
+        </div>
       </div>
     </main>
   );

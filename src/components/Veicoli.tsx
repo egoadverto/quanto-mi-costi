@@ -40,7 +40,38 @@ function Veicoli({ veicoli, form, isEditing, showForm = true, showList = true, o
 <div className="grid gap-4 lg:grid-cols-2">
         {showList && <div className="panel-highlight p-5 order-2 sm:order-1">
           <h3 className="mb-3 font-semibold">Elenco veicoli</h3>
-          <ul className="space-y-2">
+          <div className="hidden lg:block overflow-x-auto">
+            <table className="desktop-table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Marca</th>
+                  <th>Modello</th>
+                  <th>Data acquisto</th>
+                  <th>Km iniziali</th>
+                  <th>Azioni</th>
+                </tr>
+              </thead>
+              <tbody>
+                {veicoli.map((v) => (
+                  <tr key={v.id}>
+                    <td className="font-semibold">{v.nome}</td>
+                    <td>{v.marca || '-'}</td>
+                    <td>{v.modello || '-'}</td>
+                    <td>{formatDate(v.data_acquisto)}</td>
+                    <td>{v.odometro_iniziale ?? '-'}</td>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <button className="btn-secondary" onClick={() => onEdit(v.id)}>Modifica</button>
+                        <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold" onClick={() => void onDelete(v.id)}>Elimina</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <ul className="space-y-2 lg:hidden">
             {veicoli.map((v) => (
               <li key={v.id} className="rounded-xl border p-3" style={{ borderColor: 'var(--border)' }}>
                 <div className="flex items-start justify-between gap-2">
