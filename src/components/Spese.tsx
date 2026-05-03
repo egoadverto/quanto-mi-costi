@@ -109,8 +109,8 @@ function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm
             <article key={s.id} className="panel-highlight p-4 space-y-3">
               <div className="grid gap-2 sm:grid-cols-3">
                 <select className="app-input w-full text-sm" value={editForm.veicolo_id} onChange={(e) => setEditForm({ ...editForm, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
-                <input className="app-input w-full text-sm" type="date" value={editForm.data} onChange={(e) => setEditForm({ ...editForm, data: e.target.value })} />
-                <input className="app-input w-full text-sm" type="number" step="0.01" placeholder="Importo" value={editForm.importo} onChange={(e) => setEditForm({ ...editForm, importo: e.target.value })} />
+                <input className="app-input w-full text-sm" type="date" value={editForm.data} onChange={(e) => setEditForm({ ...editForm, data: e.target.value })} required />
+                <input className="app-input w-full text-sm" type="number" step="0.01" placeholder="Importo €" value={editForm.importo} onChange={(e) => setEditForm({ ...editForm, importo: e.target.value })} required />
               </div>
               <div className="grid gap-2 sm:grid-cols-2">
                 <select className="app-input w-full text-sm" value={editForm.categoria} onChange={(e) => setEditForm({ ...editForm, categoria: e.target.value })}>{categorieSpesa.map((c) => <option key={c} value={c}>{c}</option>)}</select>
