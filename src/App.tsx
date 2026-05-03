@@ -453,6 +453,13 @@ const [filtroDataInizio, setFiltroDataInizio] = useState('');
     return isNaN(num) ? null : num;
   }
 
+  function isValidISODate(value: string): boolean {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    const [y, m, d] = value.split('-').map(Number);
+    const date = new Date(Date.UTC(y, m - 1, d));
+    return date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d;
+  }
+
   function handleCSVImport(e: React.ChangeEvent<HTMLInputElement>, type: 'veicoli' | 'rifornimenti' | 'spese') {
     const file = e.target.files?.[0];
     if (!file || !file.name.endsWith('.csv')) {
@@ -466,6 +473,20 @@ const [filtroDataInizio, setFiltroDataInizio] = useState('');
         const lines = content.split('\n').filter(l => l.trim());
         if (lines.length < 2) return setError('File CSV vuoto o senza dati');
         const headers = parseCSVLine(lines[0]);
+        const expectedHeaders: Record<'veicoli' | 'rifornimenti' | 'spese', string[]> = {
+          veicoli: ['nome', 'marca', 'modello', 'tipo_veicolo', 'tipo_energia', 'unita_default', 'odometro_iniziale', 'data_acquisto', 'note'],
+          rifornimenti: ['veicolo_nome', 'data', 'odometro', 'quantita', 'unita', 'prezzo_unitario', 'costo_totale', 'fornitore', 'note'],
+          spese: ['veicolo_nome', 'data', 'categoria', 'descrizione', 'importo', 'odometro', 'note']
+        };
+        const expected = expectedHeaders[type];
+        const normalizedHeaders = headers.map((h) => h.trim().toLowerCase());
+        const headersMatch =
+          normalizedHeaders.length === expected.length &&
+          expected.every((h, i) => normalizedHeaders[i] === h);
+        if (!headersMatch) {
+          setError(`Header CSV non valido per ${type}. Atteso: ${expected.join(';')}`);
+          return;
+        }
         const errors: string[] = [];
         const validData: any[] = [];
         for (let i = 1; i < lines.length; i++) {
@@ -480,12 +501,18 @@ const [filtroDataInizio, setFiltroDataInizio] = useState('');
               if (tipo_energia && !['elettrico', 'benzina', 'diesel'].includes(tipo_energia)) { errors.push(`Riga ${i + 1}: tipo_energia non valido`); continue; }
               const unita_default = values[5]?.trim() || 'L';
               if (unita_default && !['kWh', 'L'].includes(unita_default)) { errors.push(`Riga ${i + 1}: unita_default non valido`); continue; }
-              validData.push({ nome, marca: values[1]?.trim() || null, modello: values[2]?.trim() || null, tipo_veicolo, tipo_energia, unita_default, odometro_iniziale: parseNumber(values[6]) || 0, data_acquisto: values[7]?.trim() || null, note: values[8]?.trim() || null });
+              const odometroInizialeRaw = values[6]?.trim() || '';
+              const odometroIniziale = odometroInizialeRaw === '' ? 0 : parseNumber(odometroInizialeRaw);
+              if (odometroIniziale === null) { errors.push(`Riga ${i + 1}: odometro_iniziale non valido`); continue; }
+              const dataAcquisto = values[7]?.trim() || null;
+              if (dataAcquisto && !isValidISODate(dataAcquisto)) { errors.push(`Riga ${i + 1}: data_acquisto non valida (usa YYYY-MM-DD)`); continue; }
+              validData.push({ nome, marca: values[1]?.trim() || null, modello: values[2]?.trim() || null, tipo_veicolo, tipo_energia, unita_default, odometro_iniziale: odometroIniziale, data_acquisto: dataAcquisto, note: values[8]?.trim() || null });
             } else if (type === 'rifornimenti') {
               const veicolo_nome = values[0]?.trim();
               if (!veicolo_nome) { errors.push(`Riga ${i + 1}: veicolo_nome mancante`); continue; }
               const data = values[1]?.trim();
               if (!data) { errors.push(`Riga ${i + 1}: data mancante`); continue; }
+              if (!isValidISODate(data)) { errors.push(`Riga ${i + 1}: data non valida (usa YYYY-MM-DD)`); continue; }
               const odometro = parseNumber(values[2]);
               if (odometro === null) { errors.push(`Riga ${i + 1}: odometro mancante`); continue; }
               const quantita = parseNumber(values[3]);
@@ -502,9 +529,15 @@ const [filtroDataInizio, setFiltroDataInizio] = useState('');
               if (!veicolo_nome) { errors.push(`Riga ${i + 1}: veicolo_nome mancante`); continue; }
               const data = values[1]?.trim();
               if (!data) { errors.push(`Riga ${i + 1}: data mancante`); continue; }
+              if (!isValidISODate(data)) { errors.push(`Riga ${i + 1}: data non valida (usa YYYY-MM-DD)`); continue; }
+              const categoria = values[2]?.trim() || 'altro';
+              if (!categorieSpesa.includes(categoria)) { errors.push(`Riga ${i + 1}: categoria non valida`); continue; }
               const importo = parseNumber(values[4]);
               if (importo === null || importo < 0) { errors.push(`Riga ${i + 1}: importo mancante`); continue; }
-              validData.push({ veicolo_nome, data, categoria: values[2]?.trim() || 'altro', descrizione: values[3]?.trim() || null, importo, odometro: parseNumber(values[5]), note: values[6]?.trim() || null });
+              const odometroRaw = values[5]?.trim() || '';
+              const odometro = odometroRaw === '' ? null : parseNumber(odometroRaw);
+              if (odometroRaw !== '' && odometro === null) { errors.push(`Riga ${i + 1}: odometro non valido`); continue; }
+              validData.push({ veicolo_nome, data, categoria, descrizione: values[3]?.trim() || null, importo, odometro, note: values[6]?.trim() || null });
             }
           } catch { errors.push(`Riga ${i + 1}: errore parsing`); }
         }
