@@ -22,7 +22,6 @@ type VeicoliForm = {
 
 type VeicoliProps = {
   veicoli: Veicolo[];
-  ultimoOdometroByVeicolo: Record<string, number>;
   form: VeicoliForm;
   isEditing: boolean;
   onSubmit: (e: FormEvent) => Promise<void>;
@@ -32,7 +31,7 @@ type VeicoliProps = {
   onEdit: (id: string) => void;
 };
 
-function Veicoli({ veicoli, ultimoOdometroByVeicolo, form, isEditing, onSubmit, onFormSet, onCancelEdit, onDelete, onEdit }: VeicoliProps) {
+function Veicoli({ veicoli, form, isEditing, onSubmit, onFormSet, onCancelEdit, onDelete, onEdit }: VeicoliProps) {
   return (
     <section id="veicoli" className="space-y-3">
       <h2 className="text-xl font-semibold">Veicoli</h2>
@@ -94,8 +93,7 @@ function Veicoli({ veicoli, ultimoOdometroByVeicolo, form, isEditing, onSubmit, 
                     <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Marca: {v.marca || '-'}</p>
                     <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Modello: {v.modello || '-'}</p>
                     <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Data acquisto: {formatDate(v.data_acquisto)}</p>
-                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Km all'acquisto: {v.km_iniziali ?? '-'}</p>
-                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Km ultimo inserimento: {ultimoOdometroByVeicolo[v.id] ?? '-'}</p>
+                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Km all'acquisto: {v.odometro_iniziale ?? '-'}</p>
                   </div>
                   <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold" onClick={() => void onDelete(v.id)}>Elimina</button>
                 </div>
