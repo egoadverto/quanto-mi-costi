@@ -73,7 +73,7 @@ function Veicoli({ veicoli, form, isEditing, showForm = true, showList = true, o
           </div>
           <ul className="space-y-2 lg:hidden">
             {veicoli.map((v) => (
-              <li key={v.id} className="rounded-xl border p-3" style={{ borderColor: 'var(--border)' }}>
+              <li key={v.id} className="mobile-vehicle-card rounded-xl border p-3" style={{ borderColor: 'var(--border)' }}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="space-y-1">
                     <span className="text-sm font-semibold">{v.nome}</span>
@@ -131,7 +131,7 @@ function Veicoli({ veicoli, form, isEditing, showForm = true, showList = true, o
               <span className="text-sm font-medium">Note</span>
               <input className="app-input w-full" value={form.note} onChange={(e) => onFormSet({ ...form, note: e.target.value })} />
             </label>
-            <div className="sm:col-span-2 flex flex-wrap gap-2">
+            <div className="sm:col-span-2 flex flex-wrap gap-2 mobile-veicoli-actions">
               <button className="app-button-primary rounded-xl px-4 py-2 text-sm sm:w-fit" type="submit">{isEditing ? 'Aggiorna veicolo' : 'Salva veicolo'}</button>
               {isEditing && <button className="btn-secondary" type="button" onClick={onCancelEdit}>Annulla modifica</button>}
 </div>

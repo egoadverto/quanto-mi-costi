@@ -720,9 +720,9 @@ const rifornimentiFiltrati = useMemo(() => {
           <header className="app-topbar app-card">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <h2 className="text-xl font-bold lg:hidden">Ma quanto mi costi?!</h2>
+                <h2 className="text-lg font-bold lg:hidden">Ma quanto mi costi?!</h2>
                 <h2 className="hidden text-xl font-bold lg:block">Dashboard personale</h2>
-                <p className="text-sm text-[var(--text-secondary)]">Gestione veicoli e costi</p>
+                <p className="text-xs text-[var(--text-secondary)] lg:text-sm">Gestione veicoli e costi</p>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -732,7 +732,7 @@ const rifornimentiFiltrati = useMemo(() => {
                   aria-label="Apri menu pagine"
                   aria-expanded={mobileMenuOpen}
                 >
-                  ☰ Menu
+                  ☰
                 </button>
                 <button className="app-button-primary rounded-xl px-4 py-2 text-sm" onClick={logout}>Logout</button>
               </div>
@@ -950,6 +950,12 @@ const rifornimentiFiltrati = useMemo(() => {
           />
         </>}
           </div>
+
+          <nav className="mobile-bottom-nav lg:hidden" aria-label="Navigazione principale mobile">
+            <a href="#riepilogo" className={`mobile-bottom-link ${currentPage === 'riepilogo' ? 'mobile-bottom-link-active' : ''}`}>Riepilogo</a>
+            <a href="#inserimento" className={`mobile-bottom-link ${currentPage === 'inserimento' ? 'mobile-bottom-link-active' : ''}`}>Inserimento</a>
+            <a href="#storico" className={`mobile-bottom-link ${currentPage === 'storico' ? 'mobile-bottom-link-active' : ''}`}>Storico</a>
+          </nav>
         </div>
       </div>
     </main>

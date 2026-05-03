@@ -73,7 +73,7 @@ function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm
   return (
     <section id="spese" className="space-y-3">
       <h2 className="text-xl font-semibold">Spese</h2>
-{showForm && <div className="panel-highlight p-5">
+{showForm && <div className="panel-highlight p-5 mobile-form-panel">
         <form onSubmit={onSubmit} className="space-y-4">
           <fieldset className="space-y-2">
             <legend className="text-sm font-medium text-[var(--text-secondary)]">Dati spesa</legend>
@@ -100,7 +100,7 @@ function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm
             </div>
           </fieldset>
 
-          <button className="app-button-primary rounded-xl px-4 py-2 text-sm w-full sm:w-auto" type="submit">Salva spesa</button>
+          <button className="app-button-primary rounded-xl px-4 py-2 text-sm w-full sm:w-auto mobile-save-button" type="submit">Salva spesa</button>
         </form>
       </div>}
 {showList && <div className="grid gap-3">
@@ -146,7 +146,7 @@ function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm
               </div>
             </article>
           ) : (
-            <article key={s.id} className="panel-highlight p-4">
+            <article key={s.id} className="panel-highlight p-4 mobile-list-card">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="text-sm">
                   <p className="font-semibold">{s.categoria || 'altro'} · {nomeVeicoloById[s.veicolo_id] ?? 'Veicolo'}</p>
