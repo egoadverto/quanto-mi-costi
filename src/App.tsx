@@ -27,9 +27,13 @@ function App() {
   const [editingVeicoloId, setEditingVeicoloId] = useState<string | null>(null);
   const [rForm, setRForm] = useState(initialRForm);
   const [sForm, setSForm] = useState(initialSForm);
-  const [currentPage, setCurrentPage] = useState<'riepilogo' | 'inserimento' | 'storico'>('riepilogo');
+const [currentPage, setCurrentPage] = useState<'riepilogo' | 'inserimento' | 'storico'>('riepilogo');
   const [storicoVeicoloId, setStoricoVeicoloId] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const [filtroDataInizio, setFiltroDataInizio] = useState('');
+  const [filtroDataFine, setFiltroDataFine] = useState('');
+  const [filtroCategoria, setFiltroCategoria] = useState('');
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -190,14 +194,30 @@ function App() {
   const dashboard = useMemo(() => calculateDashboard(veicoli, rifornimenti, spese), [veicoli, rifornimenti, spese]);
   const nomeVeicoloById = useMemo(() => Object.fromEntries(veicoli.map((v) => [v.id, v.nome])), [veicoli]);
   const reportData = useMemo(() => calculateReport(veicoli, rifornimenti, spese, nomeVeicoloById), [nomeVeicoloById, rifornimenti, spese, veicoli]);
-  const rifornimentiFiltrati = useMemo(() => {
-    if (!storicoVeicoloId) return rifornimenti;
-    return rifornimenti.filter((r) => r.veicolo_id === storicoVeicoloId);
-  }, [rifornimenti, storicoVeicoloId]);
+const rifornimentiFiltrati = useMemo(() => {
+    let result = rifornimenti;
+    if (storicoVeicoloId) result = result.filter((r) => r.veicolo_id === storicoVeicoloId);
+    if (filtroDataInizio) result = result.filter((r) => r.data >= filtroDataInizio);
+    if (filtroDataFine) result = result.filter((r) => r.data <= filtroDataFine);
+    return result;
+  }, [rifornimenti, storicoVeicoloId, filtroDataInizio, filtroDataFine]);
   const speseFiltrate = useMemo(() => {
-    if (!storicoVeicoloId) return spese;
-    return spese.filter((s) => s.veicolo_id === storicoVeicoloId);
-  }, [spese, storicoVeicoloId]);
+    let result = spese;
+    if (storicoVeicoloId) result = result.filter((s) => s.veicolo_id === storicoVeicoloId);
+    if (filtroDataInizio) result = result.filter((s) => s.data >= filtroDataInizio);
+    if (filtroDataFine) result = result.filter((s) => s.data <= filtroDataFine);
+    if (filtroCategoria) result = result.filter((s) => s.categoria === filtroCategoria);
+    return result;
+  }, [spese, storicoVeicoloId, filtroDataInizio, filtroDataFine, filtroCategoria]);
+
+  const reportDataFiltrato = useMemo(() => calculateReport(veicoli, rifornimentiFiltrati, speseFiltrate, nomeVeicoloById), [veicoli, rifornimentiFiltrati, speseFiltrate, nomeVeicoloById]);
+
+  function resetFiltri() {
+    setStoricoVeicoloId('');
+    setFiltroDataInizio('');
+    setFiltroDataFine('');
+    setFiltroCategoria('');
+  }
 
   if (!session) {
     return (
@@ -300,14 +320,24 @@ function App() {
           />
         </>}
 
-        {currentPage === 'storico' && <>
-          <section className="panel-highlight p-5">
-            <h2 className="text-xl font-semibold">Filtra per veicolo</h2>
-            <select className="app-input mt-3 w-full sm:max-w-sm" value={storicoVeicoloId} onChange={(e) => setStoricoVeicoloId(e.target.value)}>
-              <option value="">Tutti i veicoli</option>
-              {veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}
-            </select>
+{currentPage === 'storico' && <>
+          <section className="panel-highlight p-5 space-y-4">
+            <h2 className="text-xl font-semibold">Filtri</h2>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <select className="app-input" value={storicoVeicoloId} onChange={(e) => setStoricoVeicoloId(e.target.value)}>
+                <option value="">Tutti i veicoli</option>
+                {veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}
+              </select>
+              <input className="app-input" type="date" value={filtroDataInizio} onChange={(e) => setFiltroDataInizio(e.target.value)} placeholder="Data inizio" />
+              <input className="app-input" type="date" value={filtroDataFine} onChange={(e) => setFiltroDataFine(e.target.value)} placeholder="Data fine" />
+              <select className="app-input" value={filtroCategoria} onChange={(e) => setFiltroCategoria(e.target.value)}>
+                <option value="">Tutte le categorie</option>
+                {categorieSpesa.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <button className="btn-secondary text-sm" onClick={resetFiltri}>Reset filtri</button>
           </section>
+          <Report reportData={reportDataFiltrato} efficienze={dashboard.efficienze} />
           <Rifornimenti
             veicoli={veicoli}
             rifornimenti={rifornimentiFiltrati}
