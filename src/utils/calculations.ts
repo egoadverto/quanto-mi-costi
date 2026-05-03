@@ -146,6 +146,7 @@ export const calculateReport = (veicoli: Veicolo[], rifornimenti: Rifornimento[]
   const perVeicolo = Object.entries(perVeicoloMap).sort((a, b) => b[1] - a[1]);
   const perCategoria = Object.entries(perCategoriaMap).sort((a, b) => b[1] - a[1]);
   const perMese = Object.entries(perMeseMap).sort((a, b) => a[0].localeCompare(b[0]));
+  const maxMese = perMese.reduce((max, [, valore]) => (valore > max ? valore : max), 0) || 1;
 
   return {
     perVeicolo,
@@ -153,6 +154,6 @@ export const calculateReport = (veicoli: Veicolo[], rifornimenti: Rifornimento[]
     perMese,
     maxVeicolo: perVeicolo[0]?.[1] ?? 1,
     maxCategoria: perCategoria[0]?.[1] ?? 1,
-    maxMese: perMese[0]?.[1] ?? 1
+    maxMese
   };
 };
