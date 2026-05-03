@@ -224,7 +224,7 @@ function App() {
               <h1 className="text-3xl font-bold">Ma quanto mi costi?!</h1>
               <p className="text-sm text-[var(--text-secondary)]">Costi, rifornimenti e report dei tuoi veicoli</p>
             </div>
-            <div className="flex items-center gap-2 self-end sm:self-auto">
+            <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-end">
               <button
                 className="app-nav-link rounded-xl px-3 py-2 text-sm font-semibold sm:hidden"
                 type="button"
