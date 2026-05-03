@@ -10,14 +10,9 @@ import { calculateDashboard, calculateReport, calculateRifornimentoForm, Riforni
 
 const categorieSpesa = ['assicurazione','bollo','manutenzione','tagliando','gomme','revisione','accessori','parcheggio','pedaggi','lavaggio','altro'];
 
-const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' });
 const initialVForm = { nome: '', marca: '', modello: '', tipo_veicolo: 'auto', tipo_energia: 'benzina', unita_default: 'L', odometro_iniziale: '0', data_acquisto: '', note: '' };
 const initialRForm = { veicolo_id: '', data: '', odometro: '', quantita: '', unita: 'L', prezzo_unitario: '', costo_totale: '', fornitore: '', note: '' };
 const initialSForm = { veicolo_id: '', data: '', categoria: 'manutenzione', descrizione: '', importo: '', odometro: '', note: '' };
-
-const sortByOdometer = (items: Rifornimento[]) => [...items].sort((a, b) => a.odometro - b.odometro);
-const sumRifornimenti = (items: Rifornimento[]) => items.reduce((acc, item) => acc + item.costo_totale, 0);
-const sumSpese = (items: Spesa[]) => items.reduce((acc, item) => acc + item.importo, 0);
 
 function App() {
   const [session, setSession] = useState<Session | null>(null);
