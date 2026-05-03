@@ -32,6 +32,8 @@ function App() {
   const [editingVeicoloId, setEditingVeicoloId] = useState<string | null>(null);
   const [rForm, setRForm] = useState(initialRForm);
   const [sForm, setSForm] = useState(initialSForm);
+  const [currentPage, setCurrentPage] = useState<'riepilogo' | 'inserimento' | 'storico'>('riepilogo');
+  const [storicoVeicoloId, setStoricoVeicoloId] = useState('');
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -42,6 +44,18 @@ function App() {
   useEffect(() => {
     if (session) void loadData();
   }, [session]);
+
+  useEffect(() => {
+    const readPageFromHash = () => {
+      const page = window.location.hash.replace('#', '');
+      if (page === 'inserimento' || page === 'storico' || page === 'riepilogo') setCurrentPage(page);
+      else setCurrentPage('riepilogo');
+    };
+
+    readPageFromHash();
+    window.addEventListener('hashchange', readPageFromHash);
+    return () => window.removeEventListener('hashchange', readPageFromHash);
+  }, []);
 
   async function loadData() {
     const [v, r, s] = await Promise.all([
@@ -168,6 +182,14 @@ function App() {
   const dashboard = useMemo(() => calculateDashboard(veicoli, rifornimenti, spese), [veicoli, rifornimenti, spese]);
   const nomeVeicoloById = useMemo(() => Object.fromEntries(veicoli.map((v) => [v.id, v.nome])), [veicoli]);
   const reportData = useMemo(() => calculateReport(veicoli, rifornimenti, spese, nomeVeicoloById), [nomeVeicoloById, rifornimenti, spese, veicoli]);
+  const rifornimentiFiltrati = useMemo(() => {
+    if (!storicoVeicoloId) return rifornimenti;
+    return rifornimenti.filter((r) => r.veicolo_id === storicoVeicoloId);
+  }, [rifornimenti, storicoVeicoloId]);
+  const speseFiltrate = useMemo(() => {
+    if (!storicoVeicoloId) return spese;
+    return spese.filter((s) => s.veicolo_id === storicoVeicoloId);
+  }, [spese, storicoVeicoloId]);
 
   if (!session) {
     return (
@@ -202,51 +224,120 @@ function App() {
             </div>
             <button className="app-button-primary rounded-xl px-4 py-2 text-sm" onClick={logout}>Logout</button>
           </div>
-          <nav className="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-5">
-            <a href="#dashboard" className="app-nav-link app-nav-link-active rounded-xl px-3 py-2 text-center font-semibold">Dashboard</a>
-            <a href="#rifornimenti" className="app-nav-link rounded-xl px-3 py-2 text-center font-semibold">Rifornimenti</a>
-            <a href="#spese" className="app-nav-link rounded-xl px-3 py-2 text-center font-semibold">Spese</a>
-            <a href="#report" className="app-nav-link rounded-xl px-3 py-2 text-center font-semibold">Report</a>
-            <a href="#veicoli" className="app-nav-link rounded-xl px-3 py-2 text-center font-semibold">Veicoli</a>
+          <nav className="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-3">
+            <a href="#riepilogo" className={`app-nav-link rounded-xl px-3 py-2 text-center font-semibold ${currentPage === 'riepilogo' ? 'app-nav-link-active' : ''}`}>Riepilogo</a>
+            <a href="#inserimento" className={`app-nav-link rounded-xl px-3 py-2 text-center font-semibold ${currentPage === 'inserimento' ? 'app-nav-link-active' : ''}`}>Inserimento dati</a>
+            <a href="#storico" className={`app-nav-link rounded-xl px-3 py-2 text-center font-semibold ${currentPage === 'storico' ? 'app-nav-link-active' : ''}`}>Riepilogo inserimenti</a>
           </nav>
         </header>
 
         {error && <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
 
-        <Dashboard dashboard={dashboard} />
-        <Rifornimenti
-          veicoli={veicoli}
-          rifornimenti={rifornimenti}
-          nomeVeicoloById={nomeVeicoloById}
-          form={rForm}
-          onSubmit={addRifornimento}
-          onFormChange={updateRForm}
-          onQuickSet={setRForm}
-          onUpdateCosto={updateRifornimentoCosto}
-          onDelete={async (id) => deleteItem('rifornimenti', id)}
-        />
-        <Spese
-          veicoli={veicoli}
-          spese={spese}
-          nomeVeicoloById={nomeVeicoloById}
-          categorieSpesa={categorieSpesa}
-          form={sForm}
-          onSubmit={addSpesa}
-          onFormSet={setSForm}
-          onUpdateImporto={updateSpesaImporto}
-          onDelete={async (id) => deleteItem('spese', id)}
-        />
-        <Report reportData={reportData} efficienze={dashboard.efficienze} />
-        <Veicoli
-          veicoli={veicoli}
-          form={vForm}
-          isEditing={Boolean(editingVeicoloId)}
-          onSubmit={saveVeicolo}
-          onFormSet={setVForm}
-          onCancelEdit={cancelEditVeicolo}
-          onDelete={async (id) => deleteItem('veicoli', id)}
-          onEdit={startEditVeicolo}
-        />
+        {currentPage === 'riepilogo' && <>
+          <Dashboard dashboard={dashboard} />
+          <Report reportData={reportData} efficienze={dashboard.efficienze} />
+          <Veicoli
+            veicoli={veicoli}
+            form={vForm}
+            isEditing={Boolean(editingVeicoloId)}
+            showForm={false}
+            showList
+            onSubmit={saveVeicolo}
+            onFormSet={setVForm}
+            onCancelEdit={cancelEditVeicolo}
+            onDelete={async (id) => deleteItem('veicoli', id)}
+            onEdit={startEditVeicolo}
+          />
+        </>}
+
+        {currentPage === 'inserimento' && <>
+          <Veicoli
+            veicoli={veicoli}
+            form={vForm}
+            isEditing={Boolean(editingVeicoloId)}
+            showForm
+            showList={false}
+            onSubmit={saveVeicolo}
+            onFormSet={setVForm}
+            onCancelEdit={cancelEditVeicolo}
+            onDelete={async (id) => deleteItem('veicoli', id)}
+            onEdit={startEditVeicolo}
+          />
+          <Rifornimenti
+            veicoli={veicoli}
+            rifornimenti={rifornimenti}
+            nomeVeicoloById={nomeVeicoloById}
+            form={rForm}
+            showForm
+            showList={false}
+            onSubmit={addRifornimento}
+            onFormChange={updateRForm}
+            onQuickSet={setRForm}
+            onUpdateCosto={updateRifornimentoCosto}
+            onDelete={async (id) => deleteItem('rifornimenti', id)}
+          />
+          <Spese
+            veicoli={veicoli}
+            spese={spese}
+            nomeVeicoloById={nomeVeicoloById}
+            categorieSpesa={categorieSpesa}
+            form={sForm}
+            showForm
+            showList={false}
+            onSubmit={addSpesa}
+            onFormSet={setSForm}
+            onUpdateImporto={updateSpesaImporto}
+            onDelete={async (id) => deleteItem('spese', id)}
+          />
+        </>}
+
+        {currentPage === 'storico' && <>
+          <section className="panel-default p-5">
+            <h2 className="text-xl font-semibold">Filtra per veicolo</h2>
+            <select className="app-input mt-3 w-full sm:max-w-sm" value={storicoVeicoloId} onChange={(e) => setStoricoVeicoloId(e.target.value)}>
+              <option value="">Tutti i veicoli</option>
+              {veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}
+            </select>
+          </section>
+          <Rifornimenti
+            veicoli={veicoli}
+            rifornimenti={rifornimentiFiltrati}
+            nomeVeicoloById={nomeVeicoloById}
+            form={rForm}
+            showForm={false}
+            showList
+            onSubmit={addRifornimento}
+            onFormChange={updateRForm}
+            onQuickSet={setRForm}
+            onUpdateCosto={updateRifornimentoCosto}
+            onDelete={async (id) => deleteItem('rifornimenti', id)}
+          />
+          <Spese
+            veicoli={veicoli}
+            spese={speseFiltrate}
+            nomeVeicoloById={nomeVeicoloById}
+            categorieSpesa={categorieSpesa}
+            form={sForm}
+            showForm={false}
+            showList
+            onSubmit={addSpesa}
+            onFormSet={setSForm}
+            onUpdateImporto={updateSpesaImporto}
+            onDelete={async (id) => deleteItem('spese', id)}
+          />
+          <Veicoli
+            veicoli={storicoVeicoloId ? veicoli.filter((v) => v.id === storicoVeicoloId) : veicoli}
+            form={vForm}
+            isEditing={Boolean(editingVeicoloId)}
+            showForm={false}
+            showList
+            onSubmit={saveVeicolo}
+            onFormSet={setVForm}
+            onCancelEdit={cancelEditVeicolo}
+            onDelete={async (id) => deleteItem('veicoli', id)}
+            onEdit={startEditVeicolo}
+          />
+        </>}
       </div>
     </main>
   );

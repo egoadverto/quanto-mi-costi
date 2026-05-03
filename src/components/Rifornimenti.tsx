@@ -7,6 +7,8 @@ type RifornimentiProps = {
   rifornimenti: Rifornimento[];
   nomeVeicoloById: Record<string, string>;
   form: RifornimentoForm;
+  showForm?: boolean;
+  showList?: boolean;
   onSubmit: (e: FormEvent) => Promise<void>;
   onFormChange: (field: keyof RifornimentoForm, value: string) => void;
   onQuickSet: (nextForm: RifornimentoForm) => void;
@@ -14,11 +16,11 @@ type RifornimentiProps = {
   onDelete: (id: string) => Promise<void>;
 };
 
-function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, onSubmit, onFormChange, onQuickSet, onUpdateCosto, onDelete }: RifornimentiProps) {
+function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm = true, showList = true, onSubmit, onFormChange, onQuickSet, onUpdateCosto, onDelete }: RifornimentiProps) {
   return (
     <section id="rifornimenti" className="space-y-3">
       <h2 className="text-xl font-semibold">Rifornimenti</h2>
-      <div className="panel-default p-5">
+      {showForm && <div className="panel-default p-5">
         <form onSubmit={onSubmit} className="grid gap-3 sm:grid-cols-2">
           <select className="app-input w-full" value={form.veicolo_id} onChange={(e) => onQuickSet({ ...form, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
           <input className="app-input w-full" type="date" value={form.data} onChange={(e) => onQuickSet({ ...form, data: e.target.value })} required />
@@ -31,8 +33,8 @@ function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, onSubmit, 
           <input className="app-input w-full sm:col-span-2" placeholder="Note" value={form.note} onChange={(e) => onQuickSet({ ...form, note: e.target.value })} />
           <button className="app-button-primary rounded-xl px-4 py-2 text-sm sm:col-span-2 sm:w-fit" type="submit">Salva rifornimento</button>
         </form>
-      </div>
-      <div className="grid gap-3">
+      </div>}
+      {showList && <div className="grid gap-3">
         {rifornimenti.map((r) => {
           const veicoloNome = nomeVeicoloById[r.veicolo_id] ?? 'Veicolo';
           const precedente = rifornimenti.filter((x) => x.veicolo_id === r.veicolo_id && x.odometro < r.odometro).sort((a, b) => b.odometro - a.odometro)[0];
@@ -55,7 +57,7 @@ function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, onSubmit, 
             </article>
           );
         })}
-      </div>
+      </div>}
     </section>
   );
 }

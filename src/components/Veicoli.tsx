@@ -24,6 +24,8 @@ type VeicoliProps = {
   veicoli: Veicolo[];
   form: VeicoliForm;
   isEditing: boolean;
+  showForm?: boolean;
+  showList?: boolean;
   onSubmit: (e: FormEvent) => Promise<void>;
   onFormSet: (nextForm: VeicoliForm) => void;
   onCancelEdit: () => void;
@@ -31,12 +33,12 @@ type VeicoliProps = {
   onEdit: (id: string) => void;
 };
 
-function Veicoli({ veicoli, form, isEditing, onSubmit, onFormSet, onCancelEdit, onDelete, onEdit }: VeicoliProps) {
+function Veicoli({ veicoli, form, isEditing, showForm = true, showList = true, onSubmit, onFormSet, onCancelEdit, onDelete, onEdit }: VeicoliProps) {
   return (
     <section id="veicoli" className="space-y-3">
       <h2 className="text-xl font-semibold">Veicoli</h2>
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="panel-highlight p-5">
+        {showForm && <div className="panel-highlight p-5">
           <h3 className="mb-3 font-semibold">{isEditing ? 'Modifica veicolo' : 'Nuovo veicolo'}</h3>
           <form onSubmit={onSubmit} className="grid gap-3 sm:grid-cols-2">
             <label className="space-y-1">
@@ -81,8 +83,8 @@ function Veicoli({ veicoli, form, isEditing, onSubmit, onFormSet, onCancelEdit, 
               {isEditing && <button className="btn-secondary" type="button" onClick={onCancelEdit}>Annulla modifica</button>}
             </div>
           </form>
-        </div>
-        <div className="panel-highlight p-5">
+        </div>}
+        {showList && <div className="panel-highlight p-5">
           <h3 className="mb-3 font-semibold">Elenco veicoli</h3>
           <ul className="space-y-2">
             {veicoli.map((v) => (
@@ -101,7 +103,7 @@ function Veicoli({ veicoli, form, isEditing, onSubmit, onFormSet, onCancelEdit, 
               </li>
             ))}
           </ul>
-        </div>
+        </div>}
       </div>
     </section>
   );

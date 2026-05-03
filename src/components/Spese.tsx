@@ -18,17 +18,19 @@ type SpeseProps = {
   nomeVeicoloById: Record<string, string>;
   categorieSpesa: string[];
   form: SpeseForm;
+  showForm?: boolean;
+  showList?: boolean;
   onSubmit: (e: FormEvent) => Promise<void>;
   onFormSet: (nextForm: SpeseForm) => void;
   onUpdateImporto: (id: string, importoAttuale: number) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 };
 
-function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, onSubmit, onFormSet, onUpdateImporto, onDelete }: SpeseProps) {
+function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm = true, showList = true, onSubmit, onFormSet, onUpdateImporto, onDelete }: SpeseProps) {
   return (
     <section id="spese" className="space-y-3">
       <h2 className="text-xl font-semibold text-[#12343b]">Spese</h2>
-      <div className="panel-highlight">
+      {showForm && <div className="panel-highlight">
         <form onSubmit={onSubmit} className="grid gap-3 sm:grid-cols-2">
           <select className="field-highlight" value={form.veicolo_id} onChange={(e) => onFormSet({ ...form, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
           <input className="field-highlight" type="date" value={form.data} onChange={(e) => onFormSet({ ...form, data: e.target.value })} required />
@@ -39,8 +41,8 @@ function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, onSubmit
           <input className="field-highlight sm:col-span-2" placeholder="Note" value={form.note} onChange={(e) => onFormSet({ ...form, note: e.target.value })} />
           <button className="btn-brand sm:col-span-2 sm:w-fit" type="submit">Salva spesa</button>
         </form>
-      </div>
-      <div className="grid gap-3">
+      </div>}
+      {showList && <div className="grid gap-3">
         {spese.map((s) => (
           <article key={s.id} className="panel-highlight">
             <div className="flex flex-wrap items-start justify-between gap-2">
@@ -56,7 +58,7 @@ function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, onSubmit
             </div>
           </article>
         ))}
-      </div>
+      </div>}
     </section>
   );
 }
