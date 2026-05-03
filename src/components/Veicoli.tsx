@@ -46,10 +46,10 @@ function Veicoli({ veicoli, form, isEditing, showForm = true, showList = true, o
                 <div className="flex items-start justify-between gap-2">
                   <div className="space-y-1">
                     <span className="text-sm font-semibold">{v.nome}</span>
-                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Marca: {v.marca || '-'}</p>
-                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Modello: {v.modello || '-'}</p>
-                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Data acquisto: {formatDate(v.data_acquisto)}</p>
-                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Km all'acquisto: {v.odometro_iniziale ?? '-'}</p>
+                    <p className="text-xs text-[var(--text-secondary)]">Marca: {v.marca || '-'}</p>
+                    <p className="text-xs text-[var(--text-secondary)]">Modello: {v.modello || '-'}</p>
+                    <p className="text-xs text-[var(--text-secondary)]">Data acquisto: {formatDate(v.data_acquisto)}</p>
+                    <p className="text-xs text-[var(--text-secondary)]">Km all'acquisto: {v.odometro_iniziale ?? '-'}</p>
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <button className="btn-secondary w-full" onClick={() => onEdit(v.id)}>Modifica</button>
