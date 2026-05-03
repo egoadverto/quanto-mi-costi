@@ -1,46 +1,49 @@
 :root {
   /* Surface hierarchy */
-  --bg-main: #1a667a;
-  --surface: #22819a;
-  --surface-variant: #2d8fa8;
-  --surface-elevated: #3c9bb4;
+  --bg-main: #031716;
+  --bg-card: #032f30;
+  --bg-card-secondary: #0a7075;
+  --surface: #032f30;
+  --surface-variant: #0a7075;
+  --surface-elevated: #0c969c;
 
   /* On surfaces */
-  --on-surface: #fef7f8;
-  --on-surface-variant: #cdd4dd;
+  --on-surface: #eaf4f6;
+  --on-surface-variant: #6ba3be;
 
   /* Border */
-  --border: #cdd4dd;
-  --border-subtle: #90c2e7;
+  --border: #274d60;
+  --border-subtle: #274d60;
 
   /* Primary - teal */
-  --primary: #22819a;
-  --primary-container: #1a667a;
-  --on-primary: #fef7f8;
-  --on-primary-container: #cdd4dd;
+  --primary: #0c969c;
+  --primary-container: #0a7075;
+  --on-primary: #eaf4f6;
+  --on-primary-container: #6ba3be;
 
   /* Secondary */
-  --secondary: #90c2e7;
-  --secondary-container: #7fb1d5;
-  --on-secondary: #1a667a;
+  --secondary: #6ba3be;
+  --secondary-container: #274d60;
+  --on-secondary: #031716;
 
   /* Accent */
-  --accent: #22819a;
-  --accent-strong: #1b6c82;
+  --accent: #0c969c;
+  --accent-strong: #6ba3be;
 
   /* Error */
-  --error: #90c2e7;
-  --error-container: #cdd4dd;
-  --on-error: #1a667a;
+  --error: #6ba3be;
+  --error-container: #274d60;
+  --on-error: #eaf4f6;
 
   /* Danger */
   --danger: #1b6c82;
   --danger-strong: #165a6d;
 
   /* Text */
-  --text-primary: #fef7f8;
-  --text-secondary: #cdd4dd;
-  --text-disabled: #90c2e7;
+  --text-primary: #eaf4f6;
+  --text-secondary: #6ba3be;
+  --text-disabled: #274d60;
+  --text-inverse: #031716;
 
   /* Spacing - Material-inspired */
   --space-xs: 0.25rem;
