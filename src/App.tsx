@@ -40,6 +40,11 @@ const [filtroDataInizio, setFiltroDataInizio] = useState('');
   const [importConfirm, setImportConfirm] = useState(false);
   const [pendingBackup, setPendingBackup] = useState<{versione: number; veicoli: any[]; rifornimenti: any[]; spese: any[]} | null>(null);
 
+  const [csvImportPreview, setCsvImportPreview] = useState<{type: string; validi: number; totali: number; errori: string[]} | null>(null);
+  const [csvImportConfirm, setCsvImportConfirm] = useState(false);
+  const [csvPendingData, setCsvPendingData] = useState<{type: string; data: any[]} | null>(null);
+  const [csvImportResult, setCsvImportResult] = useState<{importati: number; saltati: string[]} | null>(null);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
     const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => setSession(nextSession));
@@ -417,6 +422,146 @@ const [filtroDataInizio, setFiltroDataInizio] = useState('');
     setPendingBackup(null);
   }
 
+  function parseCSVLine(line: string): string[] {
+    const result: string[] = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === '"') {
+        if (inQuotes && line[i + 1] === '"') {
+          current += '"';
+          i++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === ';' && !inQuotes) {
+        result.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    result.push(current.trim());
+    return result;
+  }
+
+  function parseNumber(value: string): number | null {
+    if (!value || value === '') return null;
+    const normalized = value.replace(',', '.');
+    const num = Number(normalized);
+    return isNaN(num) ? null : num;
+  }
+
+  function handleCSVImport(e: React.ChangeEvent<HTMLInputElement>, type: 'veicoli' | 'rifornimenti' | 'spese') {
+    const file = e.target.files?.[0];
+    if (!file || !file.name.endsWith('.csv')) {
+      setError('File non valido. Usa un file .csv');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const content = event.target?.result as string;
+        const lines = content.split('\n').filter(l => l.trim());
+        if (lines.length < 2) return setError('File CSV vuoto o senza dati');
+        const headers = parseCSVLine(lines[0]);
+        const errors: string[] = [];
+        const validData: any[] = [];
+        for (let i = 1; i < lines.length; i++) {
+          const values = parseCSVLine(lines[i]);
+          try {
+            if (type === 'veicoli') {
+              const nome = values[0]?.trim();
+              if (!nome) { errors.push(`Riga ${i + 1}: nome mancante`); continue; }
+              const tipo_veicolo = values[3]?.trim() || 'auto';
+              if (tipo_veicolo && !['auto', 'moto'].includes(tipo_veicolo)) { errors.push(`Riga ${i + 1}: tipo_veicolo non valido`); continue; }
+              const tipo_energia = values[4]?.trim() || 'benzina';
+              if (tipo_energia && !['elettrico', 'benzina', 'diesel'].includes(tipo_energia)) { errors.push(`Riga ${i + 1}: tipo_energia non valido`); continue; }
+              const unita_default = values[5]?.trim() || 'L';
+              if (unita_default && !['kWh', 'L'].includes(unita_default)) { errors.push(`Riga ${i + 1}: unita_default non valido`); continue; }
+              validData.push({ nome, marca: values[1]?.trim() || null, modello: values[2]?.trim() || null, tipo_veicolo, tipo_energia, unita_default, odometro_iniziale: parseNumber(values[6]) || 0, data_acquisto: values[7]?.trim() || null, note: values[8]?.trim() || null });
+            } else if (type === 'rifornimenti') {
+              const veicolo_nome = values[0]?.trim();
+              if (!veicolo_nome) { errors.push(`Riga ${i + 1}: veicolo_nome mancante`); continue; }
+              const data = values[1]?.trim();
+              if (!data) { errors.push(`Riga ${i + 1}: data mancante`); continue; }
+              const odometro = parseNumber(values[2]);
+              if (odometro === null) { errors.push(`Riga ${i + 1}: odometro mancante`); continue; }
+              const quantita = parseNumber(values[3]);
+              if (!quantita || quantita <= 0) { errors.push(`Riga ${i + 1}: quantita mancante o non valida`); continue; }
+              const unita = values[4]?.trim() || 'L';
+              if (unita && !['kWh', 'L'].includes(unita)) { errors.push(`Riga ${i + 1}: unita non valido`); continue; }
+              const prezzo_unitario = parseNumber(values[5]);
+              if (prezzo_unitario === null || prezzo_unitario < 0) { errors.push(`Riga ${i + 1}: prezzo_unitario mancante`); continue; }
+              const costo_totale = parseNumber(values[6]);
+              if (costo_totale === null || costo_totale < 0) { errors.push(`Riga ${i + 1}: costo_totale mancante`); continue; }
+              validData.push({ veicolo_nome, data, odometro, quantita, unita, prezzo_unitario, costo_totale, fornitore: values[7]?.trim() || null, note: values[8]?.trim() || null });
+            } else if (type === 'spese') {
+              const veicolo_nome = values[0]?.trim();
+              if (!veicolo_nome) { errors.push(`Riga ${i + 1}: veicolo_nome mancante`); continue; }
+              const data = values[1]?.trim();
+              if (!data) { errors.push(`Riga ${i + 1}: data mancante`); continue; }
+              const importo = parseNumber(values[4]);
+              if (importo === null || importo < 0) { errors.push(`Riga ${i + 1}: importo mancante`); continue; }
+              validData.push({ veicolo_nome, data, categoria: values[2]?.trim() || 'altro', descrizione: values[3]?.trim() || null, importo, odometro: parseNumber(values[5]), note: values[6]?.trim() || null });
+            }
+          } catch { errors.push(`Riga ${i + 1}: errore parsing`); }
+        }
+        setCsvImportPreview({ type, validi: validData.length, totali: lines.length - 1, errori: errors.slice(0, 10) });
+        setCsvImportConfirm(true);
+        setCsvPendingData({ type, data: validData });
+        setCsvImportResult(null);
+      } catch { setError('Errore lettura file CSV'); }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  }
+
+  async function confirmCSVImport() {
+    if (!csvPendingData || !session?.user.id) return;
+    const { type, data } = csvPendingData;
+    const errors: string[] = [];
+    let imported = 0;
+    const veicoloNameToId: Record<string, string> = {};
+
+    if (type === 'veicoli') {
+      for (const v of data as any[]) {
+        const exists = veicoli.some(vx => vx.nome === v.nome);
+        if (exists) { errors.push(`Veicolo "${v.nome}" già esistente`); continue; }
+        const { data: inserted } = await supabase.from('veicoli').insert({ ...v, user_id: session.user.id }).select().single();
+        if (inserted?.id) veicoloNameToId[v.nome] = inserted.id;
+        imported++;
+      }
+    } else {
+      for (const item of data as any[]) {
+        let vid = veicoloNameToId[item.veicolo_nome];
+        if (!vid) {
+          const existing = veicoli.find(v => v.nome === item.veicolo_nome);
+          if (existing) { vid = existing.id; veicoloNameToId[item.veicolo_nome] = existing.id; }
+          else { errors.push(`Veicolo "${item.veicolo_nome}" non trovato`); continue; }
+        }
+        if (type === 'rifornimenti') {
+          await supabase.from('rifornimenti').insert({ veicolo_id: vid, data: item.data, odometro: item.odometro, quantita: item.quantita, unita: item.unita, prezzo_unitario: item.prezzo_unitario, costo_totale: item.costo_totale, fornitore: item.fornitore, note: item.note, user_id: session.user.id });
+          imported++;
+        } else if (type === 'spese') {
+          await supabase.from('spese').insert({ veicolo_id: vid, data: item.data, categoria: item.categoria, descrizione: item.descrizione, importo: item.importo, odometro: item.odometro, note: item.note, user_id: session.user.id });
+          imported++;
+        }
+      }
+    }
+    setCsvImportResult({ importati: imported, saltati: errors });
+    setCsvImportConfirm(false);
+    setCsvPendingData(null);
+    await loadData();
+  }
+
+  function cancelCSVImport() {
+    setCsvImportConfirm(false);
+    setCsvImportPreview(null);
+    setCsvPendingData(null);
+  }
+
   const dashboard = useMemo(() => calculateDashboard(veicoli, rifornimenti, spese), [veicoli, rifornimenti, spese]);
   const nomeVeicoloById = useMemo(() => Object.fromEntries(veicoli.map((v) => [v.id, v.nome])), [veicoli]);
   const reportData = useMemo(() => calculateReport(veicoli, rifornimenti, spese, nomeVeicoloById), [nomeVeicoloById, rifornimenti, spese, veicoli]);
@@ -588,7 +733,51 @@ const rifornimentiFiltrati = useMemo(() => {
               <button className="btn-secondary" onClick={exportRifornimenti}>Esporta rifornimenti CSV</button>
               <button className="btn-secondary" onClick={exportSpese}>Esporta spese CSV</button>
             </div>
-            <p className="text-xs text-[var(--text-secondary)]">Import CSV non ancora implementato</p>
+          </section>
+          <section className="panel-highlight p-5 space-y-4">
+            <h2 className="text-xl font-semibold">Importazione CSV</h2>
+            <div className="flex flex-wrap gap-3">
+              <label className="btn-secondary cursor-pointer">
+                <span>Importa veicoli</span>
+                <input type="file" accept=".csv" className="hidden" onChange={(e) => handleCSVImport(e, 'veicoli')} />
+              </label>
+              <label className="btn-secondary cursor-pointer">
+                <span>Importa rifornimenti</span>
+                <input type="file" accept=".csv" className="hidden" onChange={(e) => handleCSVImport(e, 'rifornimenti')} />
+              </label>
+              <label className="btn-secondary cursor-pointer">
+                <span>Importa spese</span>
+                <input type="file" accept=".csv" className="hidden" onChange={(e) => handleCSVImport(e, 'spese')} />
+              </label>
+            </div>
+            {csvImportPreview && csvImportConfirm && (
+              <div className="space-y-2 border-t border-[var(--border)] pt-3">
+                <p className="text-sm font-medium">Anteprima import {csvImportPreview.type}:</p>
+                <p className="text-sm text-[var(--text-secondary)]">{csvImportPreview.validi} righe valide su {csvImportPreview.totali} totali</p>
+                {csvImportPreview.errori.length > 0 && (
+                  <p className="text-xs text-[var(--danger)]">Primi errori: {csvImportPreview.errori.slice(0, 3).join(', ')}</p>
+                )}
+                <div className="flex gap-2">
+                  <button className="btn-primary text-sm" onClick={confirmCSVImport}>Conferma import</button>
+                  <button className="btn-secondary text-sm" onClick={cancelCSVImport}>Annulla</button>
+                </div>
+              </div>
+            )}
+            {csvImportResult && (
+              <div className="space-y-2 border-t border-[var(--border)] pt-3">
+                <p className="text-sm font-medium">Import completato:</p>
+                <p className="text-sm text-[var(--text-secondary)]">{csvImportResult.importati} record importati</p>
+                {csvImportResult.saltati.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-sm font-medium text-[var(--danger)]">Saltati ({csvImportResult.saltati.length}):</p>
+                    <ul className="text-xs text-[var(--text-secondary)] max-h-24 overflow-y-auto">
+                      {csvImportResult.saltati.slice(0, 5).map((e, i) => <li key={i}>{e}</li>)}
+                    </ul>
+                  </div>
+                )}
+                <button className="btn-secondary text-sm" onClick={() => setCsvImportResult(null)}>Chiudi</button>
+              </div>
+            )}
           </section>
         </>}
 
