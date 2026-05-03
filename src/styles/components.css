@@ -21,19 +21,19 @@
 }
 
 .app-input:focus {
-  border-color: var(--primary);
+  border-color: var(--accent);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.2);
+  box-shadow: 0 0 0 2px rgba(249, 168, 37, 0.25);
 }
 
 .app-input::placeholder {
   color: var(--text-disabled);
 }
 
-/* Primary Button - Material filled button */
+/* Primary Button */
 .app-button-primary {
-  background-color: var(--primary);
-  color: var(--on-primary);
+  background-color: var(--accent);
+  color: #012a45;
   font-weight: 600;
   border-radius: var(--radius-full);
   padding: var(--space-sm) var(--space-lg);
@@ -41,7 +41,7 @@
 }
 
 .app-button-primary:hover {
-  background-color: var(--on-primary-container);
+  background-color: var(--accent-strong);
 }
 
 .app-button-primary:active {
@@ -53,13 +53,13 @@
   background-color: transparent;
   border: 1px solid var(--danger);
   color: var(--danger);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   padding: var(--space-sm) var(--space-md);
 }
 
 /* Navigation */
 .app-nav-link {
-  border: 1px solid transparent;
+  border: 1px solid var(--border);
   background-color: var(--surface);
   color: var(--text-secondary);
   border-radius: var(--radius-full);
@@ -73,8 +73,8 @@
 }
 
 .app-nav-link-active {
-  background-color: var(--primary);
-  color: var(--on-primary);
+  background-color: var(--accent);
+  color: #012a45;
 }
 
 /* Panel / Card for lists */
@@ -95,28 +95,28 @@
 }
 
 .field-default:focus {
-  border-color: var(--primary);
+  border-color: var(--accent);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.2);
+  box-shadow: 0 0 0 2px rgba(249, 168, 37, 0.25);
 }
 
 /* Buttons */
 .btn-primary {
-  background-color: var(--primary);
-  color: var(--on-primary);
+  background-color: var(--accent);
+  color: #012a45;
   font-weight: 600;
   border-radius: var(--radius-full);
   padding: var(--space-sm) var(--space-md);
 }
 
 .btn-primary:hover {
-  background-color: var(--on-primary-container);
+  background-color: var(--accent-strong);
 }
 
 .btn-secondary {
   background-color: var(--surface-variant);
-  color: var(--on-surface);
-  border: none;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
   border-radius: var(--radius-full);
   padding: var(--space-sm) var(--space-md);
 }
@@ -150,7 +150,7 @@
 .stat-value {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--primary);
+  color: var(--accent);
 }
 
 /* Headings */
@@ -161,11 +161,11 @@ h2, h3 {
 
 /* Links */
 a {
-  color: var(--primary);
+  color: var(--accent);
 }
 
 a:hover {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 
 /* Form legends */
@@ -187,10 +187,16 @@ article {
 @media (max-width: 640px) {
   .app-input {
     padding: var(--space-md);
+    min-height: 44px;
   }
 
   .btn-primary, .btn-secondary, .app-button-danger {
     padding: var(--space-md) var(--space-lg);
+    min-height: 44px;
+  }
+
+  .app-nav-link {
+    padding: var(--space-md);
     min-height: 44px;
   }
 }
