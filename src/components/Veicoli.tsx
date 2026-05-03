@@ -10,7 +10,6 @@ type VeicoliForm = {
   unita_default: string;
   odometro_iniziale: string;
   data_acquisto: string;
-  km_iniziali: string;
   note: string;
 };
 
@@ -46,8 +45,9 @@ function Veicoli({ veicoli, form, isEditing, onSubmit, onFormSet, onCancelEdit, 
               <input className="app-input w-full" value={form.modello} onChange={(e) => onFormSet({ ...form, modello: e.target.value })} />
             </label>
             <label className="space-y-1">
-              <span className="text-sm font-medium">Odometro attuale / iniziale</span>
+              <span className="text-sm font-medium">Odometro iniziale</span>
               <input className="app-input w-full" type="number" value={form.odometro_iniziale} onChange={(e) => onFormSet({ ...form, odometro_iniziale: e.target.value })} />
+              <p className="text-xs text-[var(--text-secondary)]">Km indicati sul veicolo al momento della creazione.</p>
             </label>
             <label className="space-y-1">
               <span className="text-sm font-medium">Data acquisto</span>
