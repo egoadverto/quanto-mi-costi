@@ -20,18 +20,36 @@ function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm =
   return (
     <section id="rifornimenti" className="space-y-3">
       <h2 className="text-xl font-semibold">Rifornimenti</h2>
-      {showForm && <div className="panel-highlight p-5">
-        <form onSubmit={onSubmit} className="grid gap-3 sm:grid-cols-2">
-          <select className="app-input w-full" value={form.veicolo_id} onChange={(e) => onQuickSet({ ...form, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
-          <input className="app-input w-full" type="date" value={form.data} onChange={(e) => onQuickSet({ ...form, data: e.target.value })} required />
-          <input className="app-input w-full" type="number" placeholder="Odometro" value={form.odometro} onChange={(e) => onQuickSet({ ...form, odometro: e.target.value })} required />
-          <input className="app-input w-full" type="number" step="0.01" placeholder="Quantità" value={form.quantita} onChange={(e) => onFormChange('quantita', e.target.value)} required />
-          <select className="app-input w-full" value={form.unita} onChange={(e) => onQuickSet({ ...form, unita: e.target.value })}><option value="L">L</option><option value="kWh">kWh</option></select>
-          <input className="app-input w-full" type="number" step="0.0001" placeholder="Prezzo unitario" value={form.prezzo_unitario} onChange={(e) => onFormChange('prezzo_unitario', e.target.value)} required />
-          <input className="app-input w-full" type="number" step="0.01" placeholder="Costo totale" value={form.costo_totale} onChange={(e) => onFormChange('costo_totale', e.target.value)} required />
-          <input className="app-input w-full" placeholder="Fornitore" value={form.fornitore} onChange={(e) => onQuickSet({ ...form, fornitore: e.target.value })} />
-          <input className="app-input w-full sm:col-span-2" placeholder="Note" value={form.note} onChange={(e) => onQuickSet({ ...form, note: e.target.value })} />
-          <button className="app-button-primary rounded-xl px-4 py-2 text-sm sm:col-span-2 sm:w-fit" type="submit">Salva rifornimento</button>
+{showForm && <div className="panel-highlight p-5">
+        <form onSubmit={onSubmit} className="space-y-4">
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-medium text-[var(--text-secondary)]">Dati base</legend>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <select className="app-input w-full" value={form.veicolo_id} onChange={(e) => onQuickSet({ ...form, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
+              <input className="app-input w-full" type="date" value={form.data} onChange={(e) => onQuickSet({ ...form, data: e.target.value })} required />
+              <input className="app-input w-full" type="number" placeholder="Odometro" value={form.odometro} onChange={(e) => onQuickSet({ ...form, odometro: e.target.value })} required />
+            </div>
+          </fieldset>
+
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-medium text-[var(--text-secondary)]">Dati rifornimento</legend>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <input className="app-input w-full" type="number" step="0.01" placeholder="Quantità" value={form.quantita} onChange={(e) => onFormChange('quantita', e.target.value)} required />
+              <select className="app-input w-full" value={form.unita} onChange={(e) => onQuickSet({ ...form, unita: e.target.value })}><option value="L">L</option><option value="kWh">kWh</option></select>
+              <input className="app-input w-full" type="number" step="0.0001" placeholder="Prezzo unitario" value={form.prezzo_unitario} onChange={(e) => onFormChange('prezzo_unitario', e.target.value)} required />
+              <input className="app-input w-full" type="number" step="0.01" placeholder="Costo totale" value={form.costo_totale} onChange={(e) => onFormChange('costo_totale', e.target.value)} required />
+            </div>
+          </fieldset>
+
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-medium text-[var(--text-secondary)]">Dettagli (opzionali)</legend>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <input className="app-input w-full" placeholder="Fornitore" value={form.fornitore} onChange={(e) => onQuickSet({ ...form, fornitore: e.target.value })} />
+              <input className="app-input w-full" placeholder="Note" value={form.note} onChange={(e) => onQuickSet({ ...form, note: e.target.value })} />
+            </div>
+          </fieldset>
+
+          <button className="app-button-primary rounded-xl px-4 py-2 text-sm w-full sm:w-auto" type="submit">Salva rifornimento</button>
         </form>
       </div>}
       {showList && <div className="grid gap-3">
