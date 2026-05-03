@@ -333,10 +333,47 @@ const [filtroDataInizio, setFiltroDataInizio] = useState('');
     let importedSpese = 0;
 
     const veicoloNameToId: Record<string, string> = {};
+    const ambigui = new Set<string>();
+
+    function isValidISODate(value: unknown): value is string {
+      if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+      const [y, m, d] = value.split('-').map(Number);
+      const date = new Date(Date.UTC(y, m - 1, d));
+      return date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d;
+    }
+
+    function toValidNumber(value: unknown): number | null {
+      if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (!trimmed) return null;
+        const parsed = Number(trimmed.replace(',', '.'));
+        return Number.isFinite(parsed) ? parsed : null;
+      }
+      return null;
+    }
+
+    function resolveVeicoloIdByName(nome: string): string | null {
+      if (ambigui.has(nome)) return null;
+      if (veicoloNameToId[nome]) return veicoloNameToId[nome];
+      const matches = veicoli.filter((v) => v.nome === nome);
+      if (matches.length > 1) {
+        ambigui.add(nome);
+        return null;
+      }
+      if (matches.length === 1) {
+        veicoloNameToId[nome] = matches[0].id;
+        return matches[0].id;
+      }
+      return null;
+    }
     for (const v of data.veicoli) {
       if (!v.nome) { errors.push('Veicolo senza nome, saltato'); continue; }
       const veicoloExists = veicoli.some(vx => vx.nome === v.nome);
       if (veicoloExists) { errors.push(`Veicolo "${v.nome}" già esistente, saltato`); continue; }
+      const odometroIniziale = toValidNumber(v.odometro_iniziale);
+      if (odometroIniziale === null) { errors.push(`Veicolo "${v.nome}": odometro_iniziale non valido`); continue; }
+      if (v.data_acquisto && !isValidISODate(v.data_acquisto)) { errors.push(`Veicolo "${v.nome}": data_acquisto non valida`); continue; }
       const { data: inserted, error } = await supabase.from('veicoli').insert({
         nome: v.nome,
         marca: v.marca || null,
@@ -344,7 +381,7 @@ const [filtroDataInizio, setFiltroDataInizio] = useState('');
         tipo_veicolo: v.tipo_veicolo || 'auto',
         tipo_energia: v.tipo_energia || 'benzina',
         unita_default: v.unita_default || 'L',
-        odometro_iniziale: v.odometro_iniziale || 0,
+        odometro_iniziale: odometroIniziale,
         data_acquisto: v.data_acquisto || null,
         note: v.note || null,
         user_id: session.user.id
@@ -358,23 +395,28 @@ const [filtroDataInizio, setFiltroDataInizio] = useState('');
       if (!r.veicolo_nome || !r.data || r.quantita == null || r.costo_totale == null) {
         errors.push('Rifornimento incompleto, saltato'); continue;
       }
-      const vid = veicoloNameToId[r.veicolo_nome];
+      if (!isValidISODate(r.data)) { errors.push(`Rifornimento ${r.data}: data non valida`); continue; }
+      const odometro = toValidNumber(r.odometro);
+      const quantita = toValidNumber(r.quantita);
+      const prezzoUnitario = toValidNumber(r.prezzo_unitario);
+      const costoTotale = toValidNumber(r.costo_totale);
+      if (odometro === null || quantita === null || prezzoUnitario === null || costoTotale === null) {
+        errors.push(`Rifornimento ${r.data}: numeri non validi`); continue;
+      }
+      const vid = resolveVeicoloIdByName(r.veicolo_nome);
       if (!vid) {
-        const existingVid = veicoli.find(v => v.nome === r.veicolo_nome)?.id;
-        if (existingVid) {
-          veicoloNameToId[r.veicolo_nome] = existingVid;
-        } else {
-          errors.push(`Rifornimento per veicolo "${r.veicolo_nome}" non trovato, saltato`); continue;
-        }
+        if (ambigui.has(r.veicolo_nome)) errors.push(`Rifornimento per veicolo "${r.veicolo_nome}" ambiguo, saltato`);
+        else errors.push(`Rifornimento per veicolo "${r.veicolo_nome}" non trovato, saltato`);
+        continue;
       }
       const { error } = await supabase.from('rifornimenti').insert({
-        veicolo_id: veicoloNameToId[r.veicolo_nome],
+        veicolo_id: vid,
         data: r.data,
-        odometro: Number(r.odometro) || 0,
-        quantita: Number(r.quantita),
+        odometro,
+        quantita,
         unita: r.unita || 'L',
-        prezzo_unitario: Number(r.prezzo_unitario) || 0,
-        costo_totale: Number(r.costo_totale),
+        prezzo_unitario: prezzoUnitario,
+        costo_totale: costoTotale,
         fornitore: r.fornitore || null,
         note: r.note || null,
         user_id: session.user.id
@@ -387,22 +429,24 @@ const [filtroDataInizio, setFiltroDataInizio] = useState('');
       if (!s.veicolo_nome || !s.data || s.importo == null) {
         errors.push('Spesa incompleta, saltata'); continue;
       }
-      const vid = veicoloNameToId[s.veicolo_nome];
+      if (!isValidISODate(s.data)) { errors.push(`Spesa ${s.data}: data non valida`); continue; }
+      const importo = toValidNumber(s.importo);
+      if (importo === null) { errors.push(`Spesa ${s.data}: importo non valido`); continue; }
+      const odometro = s.odometro == null || s.odometro === '' ? null : toValidNumber(s.odometro);
+      if (s.odometro != null && s.odometro !== '' && odometro === null) { errors.push(`Spesa ${s.data}: odometro non valido`); continue; }
+      const vid = resolveVeicoloIdByName(s.veicolo_nome);
       if (!vid) {
-        const existingVid = veicoli.find(v => v.nome === s.veicolo_nome)?.id;
-        if (existingVid) {
-          veicoloNameToId[s.veicolo_nome] = existingVid;
-        } else {
-          errors.push(`Spesa per veicolo "${s.veicolo_nome}" non trovato, saltata`); continue;
-        }
+        if (ambigui.has(s.veicolo_nome)) errors.push(`Spesa per veicolo "${s.veicolo_nome}" ambiguo, saltata`);
+        else errors.push(`Spesa per veicolo "${s.veicolo_nome}" non trovato, saltata`);
+        continue;
       }
       const { error } = await supabase.from('spese').insert({
-        veicolo_id: veicoloNameToId[s.veicolo_nome],
+        veicolo_id: vid,
         data: s.data,
         categoria: s.categoria || 'altro',
         descrizione: s.descrizione || null,
-        importo: Number(s.importo),
-        odometro: s.odometro ? Number(s.odometro) : null,
+        importo,
+        odometro,
         note: s.note || null,
         user_id: session.user.id
       });
