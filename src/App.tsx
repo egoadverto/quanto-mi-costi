@@ -827,15 +827,15 @@ const rifornimentiFiltrati = useMemo(() => {
             <h2 className="text-xl font-semibold">Importazione CSV</h2>
             <div className="flex flex-wrap gap-3">
               <label className="btn-secondary cursor-pointer">
-                <span>Importa veicoli</span>
+                <span>Importa veicoli CSV</span>
                 <input type="file" accept=".csv" className="hidden" onChange={(e) => handleCSVImport(e, 'veicoli')} />
               </label>
               <label className="btn-secondary cursor-pointer">
-                <span>Importa rifornimenti</span>
+                <span>Importa rifornimenti CSV</span>
                 <input type="file" accept=".csv" className="hidden" onChange={(e) => handleCSVImport(e, 'rifornimenti')} />
               </label>
               <label className="btn-secondary cursor-pointer">
-                <span>Importa spese</span>
+                <span>Importa spese CSV</span>
                 <input type="file" accept=".csv" className="hidden" onChange={(e) => handleCSVImport(e, 'spese')} />
               </label>
             </div>
@@ -844,7 +844,12 @@ const rifornimentiFiltrati = useMemo(() => {
                 <p className="text-sm font-medium">Anteprima import {csvImportPreview.type}:</p>
                 <p className="text-sm text-[var(--text-secondary)]">{csvImportPreview.validi} righe valide su {csvImportPreview.totali} totali</p>
                 {csvImportPreview.errori.length > 0 && (
-                  <p className="text-xs text-[var(--danger)]">Primi errori: {csvImportPreview.errori.slice(0, 3).join(', ')}</p>
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-[var(--danger)]">Primi errori ({Math.min(5, csvImportPreview.errori.length)} di {csvImportPreview.errori.length}):</p>
+                    <ul className="text-xs text-[var(--danger)] list-disc pl-4 space-y-1">
+                      {csvImportPreview.errori.slice(0, 5).map((errore, i) => <li key={i}>{errore}</li>)}
+                    </ul>
+                  </div>
                 )}
                 <div className="flex gap-2">
                   <button className="btn-primary text-sm" onClick={confirmCSVImport}>Conferma import</button>
