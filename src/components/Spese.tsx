@@ -30,7 +30,7 @@ function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm
   return (
     <section id="spese" className="space-y-3">
       <h2 className="text-xl font-semibold">Spese</h2>
-      {showForm && <div className="panel-highlight">
+      {showForm && <div className="panel-highlight p-5">
         <form onSubmit={onSubmit} className="grid gap-3 sm:grid-cols-2">
           <select className="field-highlight" value={form.veicolo_id} onChange={(e) => onFormSet({ ...form, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
           <input className="field-highlight" type="date" value={form.data} onChange={(e) => onFormSet({ ...form, data: e.target.value })} required />
