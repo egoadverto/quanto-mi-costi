@@ -545,19 +545,11 @@ const rifornimentiFiltrati = useMemo(() => {
             onEdit={startEditVeicolo}
           />
           <section className="panel-highlight p-5 space-y-4">
-            <h2 className="text-xl font-semibold">Esportazione dati</h2>
+            <h2 className="text-xl font-semibold">Backup e ripristino</h2>
             <div className="flex flex-wrap gap-3">
-              <button className="btn-secondary" onClick={exportVeicoli}>Esporta veicoli CSV</button>
-              <button className="btn-secondary" onClick={exportRifornimenti}>Esporta rifornimenti CSV</button>
-              <button className="btn-secondary" onClick={exportSpese}>Esporta spese CSV</button>
-              <button className="btn-primary" onClick={exportBackup}>Scarica backup JSON</button>
-            </div>
-          </section>
-          <section className="panel-highlight p-5 space-y-4">
-            <h2 className="text-xl font-semibold">Ripristino dati</h2>
-            <div className="flex flex-wrap gap-3">
+              <button className="btn-secondary" onClick={exportBackup}>Esporta backup JSON</button>
               <label className="btn-secondary cursor-pointer">
-                <span>Ripristina da backup JSON</span>
+                <span>Ripristina da backup</span>
                 <input type="file" accept=".json" className="hidden" onChange={handleBackupFile} />
               </label>
             </div>
@@ -588,6 +580,15 @@ const rifornimentiFiltrati = useMemo(() => {
                 <button className="btn-secondary text-sm" onClick={() => setImportResult(null)}>Chiudi</button>
               </div>
             )}
+          </section>
+          <section className="panel-highlight p-5 space-y-4">
+            <h2 className="text-xl font-semibold">Esportazione CSV</h2>
+            <div className="flex flex-wrap gap-3">
+              <button className="btn-secondary" onClick={exportVeicoli}>Esporta veicoli CSV</button>
+              <button className="btn-secondary" onClick={exportRifornimenti}>Esporta rifornimenti CSV</button>
+              <button className="btn-secondary" onClick={exportSpese}>Esporta spese CSV</button>
+            </div>
+            <p className="text-xs text-[var(--text-secondary)]">Import CSV non ancora implementato</p>
           </section>
         </>}
 
