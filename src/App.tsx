@@ -239,18 +239,6 @@ function App() {
         </>}
 
         {currentPage === 'inserimento' && <>
-          <Veicoli
-            veicoli={veicoli}
-            form={vForm}
-            isEditing={Boolean(editingVeicoloId)}
-            showForm
-            showList
-            onSubmit={saveVeicolo}
-            onFormSet={setVForm}
-            onCancelEdit={cancelEditVeicolo}
-            onDelete={async (id) => deleteItem('veicoli', id)}
-            onEdit={startEditVeicolo}
-          />
           <Rifornimenti
             veicoli={veicoli}
             rifornimenti={rifornimenti}
@@ -276,6 +264,18 @@ function App() {
             onFormSet={setSForm}
             onUpdateImporto={updateSpesaImporto}
             onDelete={async (id) => deleteItem('spese', id)}
+          />
+          <Veicoli
+            veicoli={veicoli}
+            form={vForm}
+            isEditing={Boolean(editingVeicoloId)}
+            showForm
+            showList
+            onSubmit={saveVeicolo}
+            onFormSet={setVForm}
+            onCancelEdit={cancelEditVeicolo}
+            onDelete={async (id) => deleteItem('veicoli', id)}
+            onEdit={startEditVeicolo}
           />
         </>}
 
