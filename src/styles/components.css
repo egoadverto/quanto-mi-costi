@@ -4,101 +4,193 @@
 }
 
 .app-card {
-  background-color: var(--bg-card);
+  background-color: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 1rem;
+  border-radius: var(--radius-lg);
   padding: var(--space-lg);
 }
 
+/* Inputs - Material style */
 .app-input {
-  background-color: var(--bg-card);
-  border: 2px solid var(--border);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   color: var(--text-primary);
   padding: var(--space-sm) var(--space-md);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-md);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.app-input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.2);
+}
+
+.app-input::placeholder {
+  color: var(--text-disabled);
+}
+
+/* Primary Button - Material filled button */
 .app-button-primary {
-  background-color: var(--accent);
-  color: #02263d;
+  background-color: var(--primary);
+  color: var(--on-primary);
   font-weight: 600;
+  border-radius: var(--radius-full);
+  padding: var(--space-sm) var(--space-lg);
+  transition: background-color 0.2s, transform 0.1s;
 }
 
 .app-button-primary:hover {
-  background-color: var(--accent-strong);
+  background-color: var(--on-primary-container);
 }
 
+.app-button-primary:active {
+  transform: scale(0.98);
+}
+
+/* Danger / Outlined */
 .app-button-danger {
+  background-color: transparent;
   border: 1px solid var(--danger);
   color: var(--danger);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
 }
 
+/* Navigation */
 .app-nav-link {
-  border: 1px solid var(--border);
-  background-color: var(--bg-card);
+  border: 1px solid transparent;
+  background-color: var(--surface);
+  color: var(--text-secondary);
+  border-radius: var(--radius-full);
+  padding: var(--space-sm) var(--space-md);
+  transition: all 0.2s;
+}
+
+.app-nav-link:hover {
+  background-color: var(--surface-variant);
   color: var(--text-primary);
 }
 
 .app-nav-link-active {
-  background-color: var(--accent);
-  color: #02263d;
+  background-color: var(--primary);
+  color: var(--on-primary);
 }
 
+/* Panel / Card for lists */
 .panel-highlight {
-  @apply rounded-2xl shadow-sm;
-  background-color: var(--bg-card);
-  border: 2px solid var(--border);
+  background-color: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
 }
 
+/* Field default (login form) */
 .field-default {
-  @apply w-full text-sm focus:outline-none focus:ring-2;
-  background-color: var(--bg-card);
-  border: 2px solid var(--border);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   color: var(--text-primary);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-md);
   padding: var(--space-sm) var(--space-md);
 }
 
 .field-default:focus {
-  --tw-ring-color: color-mix(in oklab, var(--accent) 100%, transparent);
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.2);
 }
 
+/* Buttons */
 .btn-primary {
-  @apply rounded-xl px-4 py-2 text-sm font-semibold;
-  background-color: var(--accent);
-  color: #02263d;
+  background-color: var(--primary);
+  color: var(--on-primary);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  padding: var(--space-sm) var(--space-md);
 }
 
 .btn-primary:hover {
-  background-color: var(--accent-strong);
+  background-color: var(--on-primary-container);
 }
 
 .btn-secondary {
-  @apply rounded-xl border px-3 py-2 text-sm font-semibold;
-  border-color: var(--border);
-  background-color: color-mix(in oklab, var(--bg-card) 82%, white);
-  color: var(--text-primary);
+  background-color: var(--surface-variant);
+  color: var(--on-surface);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.btn-secondary:hover {
+  background-color: var(--surface-elevated);
 }
 
 .btn-danger {
-  @apply rounded-xl border px-3 py-2 text-sm font-semibold;
-  border-color: var(--danger);
+  background-color: transparent;
+  border: 1px solid var(--danger);
   color: var(--danger);
+  border-radius: var(--radius-full);
+  padding: var(--space-sm) var(--space-md);
 }
 
+/* Stat cards for Dashboard */
 .stat-card {
-  @apply rounded-2xl shadow-sm;
-  background-color: var(--bg-card);
-  border: 2px solid var(--border);
-  padding: 1rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
 }
 
 .stat-label {
-  @apply text-xs;
   color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
 .stat-value {
-  @apply text-xl font-bold;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Headings */
+h2, h3 {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Links */
+a {
+  color: var(--primary);
+}
+
+a:hover {
   color: var(--accent);
+}
+
+/* Form legends */
+legend {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: var(--space-sm);
+}
+
+/* List items */
+article {
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .app-input {
+    padding: var(--space-md);
+  }
+
+  .btn-primary, .btn-secondary, .app-button-danger {
+    padding: var(--space-md) var(--space-lg);
+    min-height: 44px;
+  }
 }
