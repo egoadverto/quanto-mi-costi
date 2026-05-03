@@ -44,20 +44,13 @@
   color: #02263d;
 }
 
-.panel-default {
-  @apply rounded-2xl shadow-sm;
-  background-color: var(--bg-card);
-  border: 1px solid var(--border);
-}
-
 .panel-highlight {
   @apply rounded-2xl shadow-sm;
   background-color: var(--bg-card);
   border: 1px solid var(--border);
 }
 
-.field-default,
-.field-highlight {
+.field-default {
   @apply w-full text-sm focus:outline-none focus:ring-2;
   background-color: var(--bg-card);
   border: 1px solid var(--border);
@@ -66,20 +59,17 @@
   padding: var(--space-sm) var(--space-md);
 }
 
-.field-default:focus,
-.field-highlight:focus {
+.field-default:focus {
   --tw-ring-color: color-mix(in oklab, var(--accent) 100%, transparent);
 }
 
-.btn-primary,
-.btn-brand {
+.btn-primary {
   @apply rounded-xl px-4 py-2 text-sm font-semibold;
   background-color: var(--accent);
   color: #02263d;
 }
 
-.btn-primary:hover,
-.btn-brand:hover {
+.btn-primary:hover {
   background-color: var(--accent-strong);
 }
 

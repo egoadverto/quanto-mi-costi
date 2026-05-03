@@ -32,14 +32,14 @@ function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm
       <h2 className="text-xl font-semibold">Spese</h2>
       {showForm && <div className="panel-highlight p-5">
         <form onSubmit={onSubmit} className="grid gap-3 sm:grid-cols-2">
-          <select className="field-highlight" value={form.veicolo_id} onChange={(e) => onFormSet({ ...form, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
-          <input className="field-highlight" type="date" value={form.data} onChange={(e) => onFormSet({ ...form, data: e.target.value })} required />
-          <select className="field-highlight" value={form.categoria} onChange={(e) => onFormSet({ ...form, categoria: e.target.value })}>{categorieSpesa.map((c) => <option key={c} value={c}>{c}</option>)}</select>
-          <input className="field-highlight" placeholder="Descrizione" value={form.descrizione} onChange={(e) => onFormSet({ ...form, descrizione: e.target.value })} />
-          <input className="field-highlight" type="number" step="0.01" placeholder="Importo" value={form.importo} onChange={(e) => onFormSet({ ...form, importo: e.target.value })} required />
-          <input className="field-highlight" type="number" placeholder="Odometro (opzionale)" value={form.odometro} onChange={(e) => onFormSet({ ...form, odometro: e.target.value })} />
+          <select className="field-default" value={form.veicolo_id} onChange={(e) => onFormSet({ ...form, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
+          <input className="field-default" type="date" value={form.data} onChange={(e) => onFormSet({ ...form, data: e.target.value })} required />
+          <select className="field-default" value={form.categoria} onChange={(e) => onFormSet({ ...form, categoria: e.target.value })}>{categorieSpesa.map((c) => <option key={c} value={c}>{c}</option>)}</select>
+          <input className="field-default" placeholder="Descrizione" value={form.descrizione} onChange={(e) => onFormSet({ ...form, descrizione: e.target.value })} />
+          <input className="field-default" type="number" step="0.01" placeholder="Importo" value={form.importo} onChange={(e) => onFormSet({ ...form, importo: e.target.value })} required />
+          <input className="field-default" type="number" placeholder="Odometro (opzionale)" value={form.odometro} onChange={(e) => onFormSet({ ...form, odometro: e.target.value })} />
           <input className="field-highlight sm:col-span-2" placeholder="Note" value={form.note} onChange={(e) => onFormSet({ ...form, note: e.target.value })} />
-          <button className="btn-brand sm:col-span-2 sm:w-fit" type="submit">Salva spesa</button>
+          <button className="btn-primary sm:col-span-2 sm:w-fit" type="submit">Salva spesa</button>
         </form>
       </div>}
       {showList && <div className="grid gap-3">

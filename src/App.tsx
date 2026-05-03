@@ -290,7 +290,7 @@ function App() {
         </>}
 
         {currentPage === 'storico' && <>
-          <section className="panel-default p-5">
+          <section className="panel-highlight p-5">
             <h2 className="text-xl font-semibold">Filtra per veicolo</h2>
             <select className="app-input mt-3 w-full sm:max-w-sm" value={storicoVeicoloId} onChange={(e) => setStoricoVeicoloId(e.target.value)}>
               <option value="">Tutti i veicoli</option>

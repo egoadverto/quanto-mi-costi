@@ -20,7 +20,7 @@ function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm =
   return (
     <section id="rifornimenti" className="space-y-3">
       <h2 className="text-xl font-semibold">Rifornimenti</h2>
-      {showForm && <div className="panel-default p-5">
+      {showForm && <div className="panel-highlight p-5">
         <form onSubmit={onSubmit} className="grid gap-3 sm:grid-cols-2">
           <select className="app-input w-full" value={form.veicolo_id} onChange={(e) => onQuickSet({ ...form, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
           <input className="app-input w-full" type="date" value={form.data} onChange={(e) => onQuickSet({ ...form, data: e.target.value })} required />
