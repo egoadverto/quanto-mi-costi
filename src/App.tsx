@@ -154,21 +154,15 @@ function App() {
     setVForm(initialVForm);
   }
 
-  async function updateRifornimentoCosto(id: string, costoAttuale: number) {
-    const nuovoCosto = window.prompt('Nuovo costo totale', String(costoAttuale));
-    if (nuovoCosto === null) return;
-    const costo = Number(nuovoCosto);
-    if (Number.isNaN(costo) || costo < 0) return setError('Costo totale non valido');
-    await supabase.from('rifornimenti').update({ costo_totale: costo }).eq('id', id);
+  async function updateRifornimentoFull(id: string, data: { veicolo_id: string; data: string; odometro: number; quantita: number; unita: string; prezzo_unitario: number; costo_totale: number; fornitore: string | null; note: string | null }) {
+    const { error } = await supabase.from('rifornimenti').update(data).eq('id', id);
+    if (error) return setError(error.message);
     await loadData();
   }
 
-  async function updateSpesaImporto(id: string, importoAttuale: number) {
-    const nuovoImporto = window.prompt('Nuovo importo', String(importoAttuale));
-    if (nuovoImporto === null) return;
-    const importo = Number(nuovoImporto);
-    if (Number.isNaN(importo) || importo < 0) return setError('Importo non valido');
-    await supabase.from('spese').update({ importo }).eq('id', id);
+  async function updateSpesaFull(id: string, data: { veicolo_id: string; data: string; categoria: string; descrizione: string | null; importo: number; odometro: number | null; note: string | null }) {
+    const { error } = await supabase.from('spese').update(data).eq('id', id);
+    if (error) return setError(error.message);
     await loadData();
   }
 
@@ -259,7 +253,7 @@ function App() {
             onSubmit={addRifornimento}
             onFormChange={updateRForm}
             onQuickSet={setRForm}
-            onUpdateCosto={updateRifornimentoCosto}
+            onUpdateFull={updateRifornimentoFull}
             onDelete={async (id) => deleteItem('rifornimenti', id)}
           />
           <Spese
@@ -272,7 +266,7 @@ function App() {
             showList={false}
             onSubmit={addSpesa}
             onFormSet={setSForm}
-            onUpdateImporto={updateSpesaImporto}
+            onUpdateFull={updateSpesaFull}
             onDelete={async (id) => deleteItem('spese', id)}
           />
           <Veicoli
@@ -307,7 +301,7 @@ function App() {
             onSubmit={addRifornimento}
             onFormChange={updateRForm}
             onQuickSet={setRForm}
-            onUpdateCosto={updateRifornimentoCosto}
+            onUpdateFull={updateRifornimentoFull}
             onDelete={async (id) => deleteItem('rifornimenti', id)}
           />
           <Spese
@@ -320,7 +314,7 @@ function App() {
             showList
             onSubmit={addSpesa}
             onFormSet={setSForm}
-            onUpdateImporto={updateSpesaImporto}
+            onUpdateFull={updateSpesaFull}
             onDelete={async (id) => deleteItem('spese', id)}
           />
         </>}

@@ -1,8 +1,18 @@
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { Spesa } from '../utils/calculations';
 import { euro } from '../utils/format';
 
 type SpeseForm = {
+  veicolo_id: string;
+  data: string;
+  categoria: string;
+  descrizione: string;
+  importo: string;
+  odometro: string;
+  note: string;
+};
+
+type EditFormData = {
   veicolo_id: string;
   data: string;
   categoria: string;
@@ -22,11 +32,44 @@ type SpeseProps = {
   showList?: boolean;
   onSubmit: (e: FormEvent) => Promise<void>;
   onFormSet: (nextForm: SpeseForm) => void;
-  onUpdateImporto: (id: string, importoAttuale: number) => Promise<void>;
+  onUpdateFull: (id: string, data: { veicolo_id: string; data: string; categoria: string; descrizione: string | null; importo: number; odometro: number | null; note: string | null }) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 };
 
-function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm = true, showList = true, onSubmit, onFormSet, onUpdateImporto, onDelete }: SpeseProps) {
+function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm = true, showList = true, onSubmit, onFormSet, onUpdateFull, onDelete }: SpeseProps) {
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<EditFormData>({ veicolo_id: '', data: '', categoria: 'manutenzione', descrizione: '', importo: '', odometro: '', note: '' });
+
+  const startEdit = (s: Spesa) => {
+    setEditingId(s.id);
+    setEditForm({
+      veicolo_id: s.veicolo_id,
+      data: s.data,
+      categoria: s.categoria || 'manutenzione',
+      descrizione: s.descrizione || '',
+      importo: String(s.importo),
+      odometro: s.odometro === null ? '' : String(s.odometro),
+      note: s.note || ''
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditForm({ veicolo_id: '', data: '', categoria: 'manutenzione', descrizione: '', importo: '', odometro: '', note: '' });
+  };
+
+  const saveEdit = async (id: string) => {
+    await onUpdateFull(id, {
+      veicolo_id: editForm.veicolo_id,
+      data: editForm.data,
+      categoria: editForm.categoria,
+      descrizione: editForm.descrizione.trim() || null,
+      importo: Number(editForm.importo),
+      odometro: editForm.odometro.trim() === '' ? null : Number(editForm.odometro),
+      note: editForm.note.trim() || null
+    });
+    cancelEdit();
+  };
   return (
     <section id="spese" className="space-y-3">
       <h2 className="text-xl font-semibold">Spese</h2>
@@ -62,18 +105,39 @@ function Spese({ veicoli, spese, nomeVeicoloById, categorieSpesa, form, showForm
       </div>}
 {showList && <div className="grid gap-3">
         {spese.map((s) => (
-          <article key={s.id} className="panel-highlight p-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="text-sm">
-                <p className="font-semibold">{s.categoria || 'altro'} · {nomeVeicoloById[s.veicolo_id] ?? 'Veicolo'}</p>
-                <p className="text-[var(--text-secondary)]">{s.data} · Importo {euro.format(s.importo)}</p>
+          editingId === s.id ? (
+            <article key={s.id} className="panel-highlight p-4 space-y-3">
+              <div className="grid gap-2 sm:grid-cols-3">
+                <select className="app-input w-full text-sm" value={editForm.veicolo_id} onChange={(e) => setEditForm({ ...editForm, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
+                <input className="app-input w-full text-sm" type="date" value={editForm.data} onChange={(e) => setEditForm({ ...editForm, data: e.target.value })} />
+                <input className="app-input w-full text-sm" type="number" step="0.01" placeholder="Importo" value={editForm.importo} onChange={(e) => setEditForm({ ...editForm, importo: e.target.value })} />
+              </div>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <select className="app-input w-full text-sm" value={editForm.categoria} onChange={(e) => setEditForm({ ...editForm, categoria: e.target.value })}>{categorieSpesa.map((c) => <option key={c} value={c}>{c}</option>)}</select>
+                <input className="app-input w-full text-sm" placeholder="Descrizione" value={editForm.descrizione} onChange={(e) => setEditForm({ ...editForm, descrizione: e.target.value })} />
+                <input className="app-input w-full text-sm" type="number" placeholder="Odometro" value={editForm.odometro} onChange={(e) => setEditForm({ ...editForm, odometro: e.target.value })} />
+                <input className="app-input w-full text-sm" placeholder="Note" value={editForm.note} onChange={(e) => setEditForm({ ...editForm, note: e.target.value })} />
               </div>
               <div className="flex items-center gap-2">
-                <button className="btn-secondary" onClick={() => void onUpdateImporto(s.id, s.importo)}>Modifica</button>
-                <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold" onClick={() => void onDelete(s.id)}>Elimina</button>
+                <button className="btn-primary text-sm" onClick={() => saveEdit(s.id)}>Salva</button>
+                <button className="btn-secondary text-sm" onClick={cancelEdit}>Annulla</button>
+                <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold ml-auto" onClick={() => void onDelete(s.id)}>Elimina</button>
               </div>
-            </div>
-          </article>
+            </article>
+          ) : (
+            <article key={s.id} className="panel-highlight p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="text-sm">
+                  <p className="font-semibold">{s.categoria || 'altro'} · {nomeVeicoloById[s.veicolo_id] ?? 'Veicolo'}</p>
+                  <p className="text-[var(--text-secondary)]">{s.data} · Importo {euro.format(s.importo)}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button className="btn-secondary" onClick={() => startEdit(s)}>Modifica</button>
+                  <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold" onClick={() => void onDelete(s.id)}>Elimina</button>
+                </div>
+              </div>
+            </article>
+          )
         ))}
       </div>}
     </section>

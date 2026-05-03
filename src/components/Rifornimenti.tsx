@@ -1,6 +1,18 @@
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { Rifornimento, RifornimentoForm, Veicolo } from '../utils/calculations';
 import { euro } from '../utils/format';
+
+type EditFormData = {
+  veicolo_id: string;
+  data: string;
+  odometro: string;
+  quantita: string;
+  unita: string;
+  prezzo_unitario: string;
+  costo_totale: string;
+  fornitore: string;
+  note: string;
+};
 
 type RifornimentiProps = {
   veicoli: Veicolo[];
@@ -12,15 +24,72 @@ type RifornimentiProps = {
   onSubmit: (e: FormEvent) => Promise<void>;
   onFormChange: (field: keyof RifornimentoForm, value: string) => void;
   onQuickSet: (nextForm: RifornimentoForm) => void;
-  onUpdateCosto: (id: string, costoAttuale: number) => Promise<void>;
+  onUpdateFull: (id: string, data: { veicolo_id: string; data: string; odometro: number; quantita: number; unita: string; prezzo_unitario: number; costo_totale: number; fornitore: string | null; note: string | null }) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 };
 
-function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm = true, showList = true, onSubmit, onFormChange, onQuickSet, onUpdateCosto, onDelete }: RifornimentiProps) {
+function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm = true, showList = true, onSubmit, onFormChange, onQuickSet, onUpdateFull, onDelete }: RifornimentiProps) {
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<EditFormData>({ veicolo_id: '', data: '', odometro: '', quantita: '', unita: 'L', prezzo_unitario: '', costo_totale: '', fornitore: '', note: '' });
+
   const handleVehicleChange = (veicoloId: string) => {
     const veicolo = veicoli.find((v) => v.id === veicoloId);
     const newUnita = veicolo?.unita_default || 'L';
     onQuickSet({ ...form, veicolo_id: veicoloId, unita: newUnita });
+  };
+
+  const startEdit = (r: Rifornimento) => {
+    setEditingId(r.id);
+    setEditForm({
+      veicolo_id: r.veicolo_id,
+      data: r.data,
+      odometro: String(r.odometro),
+      quantita: String(r.quantita),
+      unita: r.unita || 'L',
+      prezzo_unitario: String(r.prezzo_unitario),
+      costo_totale: String(r.costo_totale),
+      fornitore: r.fornitore || '',
+      note: r.note || ''
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditForm({ veicolo_id: '', data: '', odometro: '', quantita: '', unita: 'L', prezzo_unitario: '', costo_totale: '', fornitore: '', note: '' });
+  };
+
+  const handleEditFormChange = (field: keyof EditFormData, value: string) => {
+    const nextForm = { ...editForm, [field]: value };
+    if (field === 'quantita' || field === 'prezzo_unitario') {
+      const q = Number(nextForm.quantita);
+      const p = Number(nextForm.prezzo_unitario);
+      if (!isNaN(q) && !isNaN(p)) {
+        nextForm.costo_totale = (Math.round(q * p * 100) / 100).toFixed(2);
+      }
+    }
+    if (field === 'costo_totale') {
+      const q = Number(nextForm.quantita);
+      const c = Number(nextForm.costo_totale);
+      if (q > 0 && !isNaN(c)) {
+        nextForm.prezzo_unitario = (Math.round((c / q) * 10000) / 10000).toFixed(4);
+      }
+    }
+    setEditForm(nextForm);
+  };
+
+  const saveEdit = async (id: string) => {
+    await onUpdateFull(id, {
+      veicolo_id: editForm.veicolo_id,
+      data: editForm.data,
+      odometro: Number(editForm.odometro),
+      quantita: Number(editForm.quantita),
+      unita: editForm.unita,
+      prezzo_unitario: Number(editForm.prezzo_unitario),
+      costo_totale: Number(editForm.costo_totale),
+      fornitore: editForm.fornitore.trim() || null,
+      note: editForm.note.trim() || null
+    });
+    cancelEdit();
   };
   return (
     <section id="rifornimenti" className="space-y-3">
@@ -57,11 +126,35 @@ function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm =
           <button className="app-button-primary rounded-xl px-4 py-2 text-sm w-full sm:w-auto" type="submit">Salva rifornimento</button>
         </form>
       </div>}
-      {showList && <div className="grid gap-3">
+{showList && <div className="grid gap-3">
         {rifornimenti.map((r) => {
           const veicoloNome = nomeVeicoloById[r.veicolo_id] ?? 'Veicolo';
           const precedente = rifornimenti.filter((x) => x.veicolo_id === r.veicolo_id && x.odometro < r.odometro).sort((a, b) => b.odometro - a.odometro)[0];
           const eff = precedente && r.quantita > 0 ? (r.odometro - precedente.odometro) / r.quantita : null;
+
+          if (editingId === r.id) {
+            return (
+              <article key={r.id} className="panel-highlight p-4 space-y-3">
+                <div className="grid gap-2 sm:grid-cols-3">
+                  <select className="app-input w-full text-sm" value={editForm.veicolo_id} onChange={(e) => handleEditFormChange('veicolo_id', e.target.value)}><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
+                  <input className="app-input w-full text-sm" type="date" value={editForm.data} onChange={(e) => handleEditFormChange('data', e.target.value)} />
+                  <input className="app-input w-full text-sm" type="number" placeholder="Odometro" value={editForm.odometro} onChange={(e) => handleEditFormChange('odometro', e.target.value)} />
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <input className="app-input w-full text-sm" type="number" step="0.01" placeholder="Quantità" value={editForm.quantita} onChange={(e) => handleEditFormChange('quantita', e.target.value)} />
+                  <select className="app-input w-full text-sm" value={editForm.unita} onChange={(e) => handleEditFormChange('unita', e.target.value)}><option value="L">L</option><option value="kWh">kWh</option></select>
+                  <input className="app-input w-full text-sm" type="number" step="0.0001" placeholder="Prezzo" value={editForm.prezzo_unitario} onChange={(e) => handleEditFormChange('prezzo_unitario', e.target.value)} />
+                  <input className="app-input w-full text-sm" type="number" step="0.01" placeholder="Totale" value={editForm.costo_totale} onChange={(e) => handleEditFormChange('costo_totale', e.target.value)} />
+                </div>
+                <div className="flex items-center gap-2">
+                  <button className="btn-primary text-sm" onClick={() => saveEdit(r.id)}>Salva</button>
+                  <button className="btn-secondary text-sm" onClick={cancelEdit}>Annulla</button>
+                  <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold ml-auto" onClick={() => void onDelete(r.id)}>Elimina</button>
+                </div>
+              </article>
+            );
+          }
+
           return (
             <article key={r.id} className="panel-highlight p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -72,7 +165,7 @@ function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm =
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button className="btn-secondary" onClick={() => void onUpdateCosto(r.id, r.costo_totale)}>Modifica</button>
+                  <button className="btn-secondary" onClick={() => startEdit(r)}>Modifica</button>
                   <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold" onClick={() => void onDelete(r.id)}>Elimina</button>
                 </div>
               </div>
