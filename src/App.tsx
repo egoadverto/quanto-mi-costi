@@ -167,6 +167,22 @@ function App() {
 
   const dashboard = useMemo(() => calculateDashboard(veicoli, rifornimenti, spese), [veicoli, rifornimenti, spese]);
   const nomeVeicoloById = useMemo(() => Object.fromEntries(veicoli.map((v) => [v.id, v.nome])), [veicoli]);
+  const ultimoOdometroByVeicolo = useMemo(() => {
+    const entries: Record<string, { data: string; odometro: number }> = {};
+
+    rifornimenti.forEach((r) => {
+      const current = entries[r.veicolo_id];
+      if (!current || r.data > current.data) entries[r.veicolo_id] = { data: r.data, odometro: r.odometro };
+    });
+
+    spese.forEach((s) => {
+      if (s.odometro === null) return;
+      const current = entries[s.veicolo_id];
+      if (!current || s.data > current.data) entries[s.veicolo_id] = { data: s.data, odometro: s.odometro };
+    });
+
+    return Object.fromEntries(Object.entries(entries).map(([veicoloId, value]) => [veicoloId, value.odometro]));
+  }, [rifornimenti, spese]);
   const reportData = useMemo(() => calculateReport(veicoli, rifornimenti, spese, nomeVeicoloById), [nomeVeicoloById, rifornimenti, spese, veicoli]);
 
   if (!session) {
@@ -239,6 +255,7 @@ function App() {
         <Report reportData={reportData} efficienze={dashboard.efficienze} />
         <Veicoli
           veicoli={veicoli}
+          ultimoOdometroByVeicolo={ultimoOdometroByVeicolo}
           form={vForm}
           isEditing={Boolean(editingVeicoloId)}
           onSubmit={saveVeicolo}

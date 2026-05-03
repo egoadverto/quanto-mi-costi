@@ -1,6 +1,13 @@
 import { FormEvent } from 'react';
 import { Veicolo } from '../utils/calculations';
 
+const formatDate = (value: string | null) => {
+  if (!value) return '-';
+  const [year, month, day] = value.split('-');
+  if (!year || !month || !day) return value;
+  return `${day}/${month}/${year}`;
+};
+
 type VeicoliForm = {
   nome: string;
   marca: string;
@@ -15,6 +22,7 @@ type VeicoliForm = {
 
 type VeicoliProps = {
   veicoli: Veicolo[];
+  ultimoOdometroByVeicolo: Record<string, number>;
   form: VeicoliForm;
   isEditing: boolean;
   onSubmit: (e: FormEvent) => Promise<void>;
@@ -24,7 +32,7 @@ type VeicoliProps = {
   onEdit: (id: string) => void;
 };
 
-function Veicoli({ veicoli, form, isEditing, onSubmit, onFormSet, onCancelEdit, onDelete, onEdit }: VeicoliProps) {
+function Veicoli({ veicoli, ultimoOdometroByVeicolo, form, isEditing, onSubmit, onFormSet, onCancelEdit, onDelete, onEdit }: VeicoliProps) {
   return (
     <section id="veicoli" className="space-y-3">
       <h2 className="text-xl font-semibold">Veicoli</h2>
@@ -81,7 +89,14 @@ function Veicoli({ veicoli, form, isEditing, onSubmit, onFormSet, onCancelEdit, 
             {veicoli.map((v) => (
               <li key={v.id} className="rounded-xl border p-3" style={{ borderColor: 'var(--border)' }}>
                 <div className="flex items-start justify-between gap-2">
-                  <span className="text-sm font-semibold">{v.nome}</span>
+                  <div className="space-y-1">
+                    <span className="text-sm font-semibold">{v.nome}</span>
+                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Marca: {v.marca || '-'}</p>
+                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Modello: {v.modello || '-'}</p>
+                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Data acquisto: {formatDate(v.data_acquisto)}</p>
+                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Km all'acquisto: {v.km_iniziali ?? '-'}</p>
+                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Km ultimo inserimento: {ultimoOdometroByVeicolo[v.id] ?? '-'}</p>
+                  </div>
                   <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold" onClick={() => void onDelete(v.id)}>Elimina</button>
                 </div>
                 <button className="btn-secondary mt-2" onClick={() => onEdit(v.id)}>Modifica</button>
