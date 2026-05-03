@@ -732,7 +732,7 @@ const rifornimentiFiltrati = useMemo(() => {
           </nav>
         </header>
 
-        {error && <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+        {error && <p className="rounded-xl border border-[var(--danger)] bg-[var(--error-container)] p-3 text-sm text-[var(--on-error)]">{error}</p>}
 
         {currentPage === 'riepilogo' && <>
           <Dashboard dashboard={dashboard} />

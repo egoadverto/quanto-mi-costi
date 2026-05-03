@@ -27,7 +27,16 @@ const HorizontalBar = ({ label, value, max, color }: { label: string; value: num
 
 const SimpleChart = ({ title, data, colorBase, emptyMsg }: { title: string; data: [string, number][], colorBase: string, emptyMsg?: string }) => {
   const max = data.length > 0 ? Math.max(...data.map(([, v]) => v)) : 0;
-  const colors = [colorBase, '#f59e0b', '#ef4444', '#22c55e', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
+  const colors = [
+    colorBase,
+    'var(--accent-strong)',
+    'var(--primary)',
+    'var(--secondary)',
+    'var(--surface-elevated)',
+    'var(--danger)',
+    'var(--border)',
+    'var(--text-secondary)'
+  ];
 
   if (data.length === 0) {
     return (
@@ -105,8 +114,8 @@ function Report({ reportData, efficienze }: ReportProps) {
     <section id="report" className="space-y-4">
       <h2 className="text-xl font-semibold">Report</h2>
       <div className="grid gap-4">
-        <SimpleChart title="Costo per veicolo" data={reportData.perVeicolo} colorBase="#f9a825" emptyMsg="Nessun veicolo con costi" />
-        <SimpleChart title="Costo per categoria" data={reportData.perCategoria} colorBase="#f59e0b" emptyMsg="Nessuna spesa registrata" />
+        <SimpleChart title="Costo per veicolo" data={reportData.perVeicolo} colorBase="var(--accent)" emptyMsg="Nessun veicolo con costi" />
+        <SimpleChart title="Costo per categoria" data={reportData.perCategoria} colorBase="var(--accent-strong)" emptyMsg="Nessuna spesa registrata" />
         <MonthlyBars data={reportData.perMese} maxValue={reportData.maxMese} />
         <EfficiencyList efficienze={efficienze} />
       </div>
