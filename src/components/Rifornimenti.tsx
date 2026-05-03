@@ -1,9 +1,9 @@
 import { FormEvent } from 'react';
-import { Rifornimento, RifornimentoForm } from '../utils/calculations';
+import { Rifornimento, RifornimentoForm, Veicolo } from '../utils/calculations';
 import { euro } from '../utils/format';
 
 type RifornimentiProps = {
-  veicoli: { id: string; nome: string }[];
+  veicoli: Veicolo[];
   rifornimenti: Rifornimento[];
   nomeVeicoloById: Record<string, string>;
   form: RifornimentoForm;
@@ -17,6 +17,11 @@ type RifornimentiProps = {
 };
 
 function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm = true, showList = true, onSubmit, onFormChange, onQuickSet, onUpdateCosto, onDelete }: RifornimentiProps) {
+  const handleVehicleChange = (veicoloId: string) => {
+    const veicolo = veicoli.find((v) => v.id === veicoloId);
+    const newUnita = veicolo?.unita_default || 'L';
+    onQuickSet({ ...form, veicolo_id: veicoloId, unita: newUnita });
+  };
   return (
     <section id="rifornimenti" className="space-y-3">
       <h2 className="text-xl font-semibold">Rifornimenti</h2>
@@ -25,7 +30,7 @@ function Rifornimenti({ veicoli, rifornimenti, nomeVeicoloById, form, showForm =
           <fieldset className="space-y-2">
             <legend className="text-sm font-medium text-[var(--text-secondary)]">Dati base</legend>
             <div className="grid gap-3 sm:grid-cols-3">
-              <select className="app-input w-full" value={form.veicolo_id} onChange={(e) => onQuickSet({ ...form, veicolo_id: e.target.value })} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
+              <select className="app-input w-full" value={form.veicolo_id} onChange={(e) => handleVehicleChange(e.target.value)} required><option value="">Veicolo</option>{veicoli.map((v) => <option key={v.id} value={v.id}>{v.nome}</option>)}</select>
               <input className="app-input w-full" type="date" value={form.data} onChange={(e) => onQuickSet({ ...form, data: e.target.value })} required />
               <input className="app-input w-full" type="number" placeholder="Odometro" value={form.odometro} onChange={(e) => onQuickSet({ ...form, odometro: e.target.value })} required />
             </div>
