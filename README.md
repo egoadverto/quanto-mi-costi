@@ -46,9 +46,75 @@ nel SQL Editor Supabase e premi **Run**.
 - Ogni query è limitata a `user_id = auth.uid()`.
 
 ## Funzionalità
-- Login email/password
-- Logout
-- App protetta (senza login viene mostrata solo schermata accesso)
-- CRUD veicoli, rifornimenti, spese
-- Dashboard con metriche in italiano
-- Layout mobile-first
+
+### Gestione veicoli
+- Creazione, modifica e cancellazione veicoli
+- Campi principali: nome, marca, modello, tipo veicolo, tipo energia, unità predefinita, odometro iniziale, data acquisto, note
+
+### Rifornimenti e ricariche
+- Inserimento e modifica completa rifornimenti/ricariche
+- Calcolo automatico tra `quantita`, `prezzo_unitario` e `costo_totale`
+- Supporto unità `L` e `kWh`
+
+### Spese
+- Inserimento, modifica e cancellazione spese
+- Categorie supportate (es. manutenzione, assicurazione, bollo, ecc.)
+- Campi opzionali: descrizione, odometro, note
+
+### Dashboard
+- Totale anno
+- Costo medio mensile
+- Costo/km
+- Veicolo più costoso
+- Ultimo rifornimento e ultima spesa
+- Efficienza media per veicolo (`km/L` o `km/kWh`)
+
+### Report / Grafici
+- Costo per veicolo
+- Costo per categoria
+- Andamento mensile
+- Efficienza media
+
+### Filtri avanzati
+- Filtro per veicolo
+- Filtro data inizio / data fine
+- Filtro categoria (spese)
+- Report e liste aggiornati in base ai filtri
+
+## Export / Import dati
+
+### Export CSV
+- Export separato per:
+  - veicoli
+  - rifornimenti
+  - spese
+- Separatore CSV usato: `;` (compatibile Excel italiano)
+
+### Import CSV
+- Import separato per:
+  - veicoli
+  - rifornimenti
+  - spese
+- Validazione dati prima dell'import (header, date, numeri, categorie)
+- Supporto numeri con virgola italiana
+- **Non cancella** dati esistenti
+- **Non sovrascrive** dati esistenti
+
+### Backup JSON
+- Esportazione backup completo con:
+  - veicoli
+  - rifornimenti
+  - spese
+
+### Ripristino JSON
+- Import da file backup JSON
+- Mantiene i dati già presenti (nessun reset automatico)
+- `user_id` del file **non viene usato**
+- Ogni record ripristinato usa il `user_id` dell'utente autenticato
+
+## Privacy
+- Accesso protetto da **Supabase Auth** (email/password)
+- Isolamento dati garantito da **Row Level Security (RLS)**
+- Ogni utente vede solo i propri dati
+- Nessun servizio Google
+- Nessuna API esterna
