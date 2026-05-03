@@ -529,7 +529,11 @@ const [filtroDataInizio, setFiltroDataInizio] = useState('');
       for (const v of data as any[]) {
         const exists = veicoli.some(vx => vx.nome === v.nome);
         if (exists) { errors.push(`Veicolo "${v.nome}" già esistente`); continue; }
-        const { data: inserted } = await supabase.from('veicoli').insert({ ...v, user_id: session.user.id }).select().single();
+        const { data: inserted, error } = await supabase.from('veicoli').insert({ ...v, user_id: session.user.id }).select().single();
+        if (error) {
+          errors.push(`Veicolo "${v.nome}": inserimento fallito`);
+          continue;
+        }
         if (inserted?.id) veicoloNameToId[v.nome] = inserted.id;
         imported++;
       }
@@ -542,10 +546,18 @@ const [filtroDataInizio, setFiltroDataInizio] = useState('');
           else { errors.push(`Veicolo "${item.veicolo_nome}" non trovato`); continue; }
         }
         if (type === 'rifornimenti') {
-          await supabase.from('rifornimenti').insert({ veicolo_id: vid, data: item.data, odometro: item.odometro, quantita: item.quantita, unita: item.unita, prezzo_unitario: item.prezzo_unitario, costo_totale: item.costo_totale, fornitore: item.fornitore, note: item.note, user_id: session.user.id });
+          const { error } = await supabase.from('rifornimenti').insert({ veicolo_id: vid, data: item.data, odometro: item.odometro, quantita: item.quantita, unita: item.unita, prezzo_unitario: item.prezzo_unitario, costo_totale: item.costo_totale, fornitore: item.fornitore, note: item.note, user_id: session.user.id });
+          if (error) {
+            errors.push(`Rifornimento ${item.data}: inserimento fallito`);
+            continue;
+          }
           imported++;
         } else if (type === 'spese') {
-          await supabase.from('spese').insert({ veicolo_id: vid, data: item.data, categoria: item.categoria, descrizione: item.descrizione, importo: item.importo, odometro: item.odometro, note: item.note, user_id: session.user.id });
+          const { error } = await supabase.from('spese').insert({ veicolo_id: vid, data: item.data, categoria: item.categoria, descrizione: item.descrizione, importo: item.importo, odometro: item.odometro, note: item.note, user_id: session.user.id });
+          if (error) {
+            errors.push(`Spesa ${item.data}: inserimento fallito`);
+            continue;
+          }
           imported++;
         }
       }
