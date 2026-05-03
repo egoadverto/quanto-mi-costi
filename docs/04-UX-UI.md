@@ -28,8 +28,17 @@
 
 Riepilogo | Inserimento dati | Riepilogo inserimenti
 
+## Backup e Ripristino
+- Esporta backup JSON
+- Ripristina da backup JSON
+- Esporta CSV (veicoli, rifornimenti, spese)
+- Importa CSV (veicoli, rifornimenti, spese)
+
 ## Regole UX
 - UI semplice
 - Tutti i campi con label
 - Nessuna logica nascosta
 - Mobile-first
+- Separatore CSV: punto e virgola `;` (compatibile Excel italiano)
+- Nessuna cancellazione dati durante import
+- Forza user_id dell'utente autenticato
