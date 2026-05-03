@@ -31,9 +31,14 @@ const [currentPage, setCurrentPage] = useState<'riepilogo' | 'inserimento' | 'st
   const [storicoVeicoloId, setStoricoVeicoloId] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const [filtroDataInizio, setFiltroDataInizio] = useState('');
+const [filtroDataInizio, setFiltroDataInizio] = useState('');
   const [filtroDataFine, setFiltroDataFine] = useState('');
   const [filtroCategoria, setFiltroCategoria] = useState('');
+
+  const [importPreview, setImportPreview] = useState<{veicoli: number; rifornimenti: number; spese: number} | null>(null);
+  const [importResult, setImportResult] = useState<{veicoli: number; rifornimenti: number; spese: number; saltati: string[]} | null>(null);
+  const [importConfirm, setImportConfirm] = useState(false);
+  const [pendingBackup, setPendingBackup] = useState<{versione: number; veicoli: any[]; rifornimenti: any[]; spese: any[]} | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -279,6 +284,139 @@ const [currentPage, setCurrentPage] = useState<'riepilogo' | 'inserimento' | 'st
     URL.revokeObjectURL(url);
   }
 
+  function handleBackupFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.name.endsWith('.json')) {
+      setError('File non valido. Usa un file .json');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const data = JSON.parse(event.target?.result as string);
+        if (!data.versione || data.versione !== 1) {
+          setError('Versione backup non valida');
+          return;
+        }
+        if (!Array.isArray(data.veicoli) || !Array.isArray(data.rifornimenti) || !Array.isArray(data.spese)) {
+          setError('Struttura backup non valida');
+          return;
+        }
+        setImportPreview({
+          veicoli: data.veicoli.length,
+          rifornimenti: data.rifornimenti.length,
+          spese: data.spese.length
+        });
+        setImportResult(null);
+        setImportConfirm(true);
+        setPendingBackup(data);
+      } catch {
+        setError('Errore lettura file JSON');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  }
+
+  async function confirmImport() {
+    if (!pendingBackup || !session?.user.id) return;
+    const data = pendingBackup;
+    const errors: string[] = [];
+    let importedVeicoli = 0;
+    let importedRifornimenti = 0;
+    let importedSpese = 0;
+
+    const veicoloNameToId: Record<string, string> = {};
+    for (const v of data.veicoli) {
+      if (!v.nome) { errors.push('Veicolo senza nome, saltato'); continue; }
+      const veicoloExists = veicoli.some(vx => vx.nome === v.nome);
+      if (veicoloExists) { errors.push(`Veicolo "${v.nome}" già esistente, saltato`); continue; }
+      const { data: inserted, error } = await supabase.from('veicoli').insert({
+        nome: v.nome,
+        marca: v.marca || null,
+        modello: v.modello || null,
+        tipo_veicolo: v.tipo_veicolo || 'auto',
+        tipo_energia: v.tipo_energia || 'benzina',
+        unita_default: v.unita_default || 'L',
+        odometro_iniziale: v.odometro_iniziale || 0,
+        data_acquisto: v.data_acquisto || null,
+        note: v.note || null,
+        user_id: session.user.id
+      }).select().single();
+      if (error) { errors.push(`Errore inserimento veicolo "${v.nome}"`); continue; }
+      if (inserted?.id) veicoloNameToId[v.nome] = inserted.id;
+      importedVeicoli++;
+    }
+
+    for (const r of data.rifornimenti) {
+      if (!r.veicolo_nome || !r.data || r.quantita == null || r.costo_totale == null) {
+        errors.push('Rifornimento incompleto, saltato'); continue;
+      }
+      const vid = veicoloNameToId[r.veicolo_nome];
+      if (!vid) {
+        const existingVid = veicoli.find(v => v.nome === r.veicolo_nome)?.id;
+        if (existingVid) {
+          veicoloNameToId[r.veicolo_nome] = existingVid;
+        } else {
+          errors.push(`Rifornimento per veicolo "${r.veicolo_nome}" non trovato, saltato`); continue;
+        }
+      }
+      const { error } = await supabase.from('rifornimenti').insert({
+        veicolo_id: veicoloNameToId[r.veicolo_nome],
+        data: r.data,
+        odometro: Number(r.odometro) || 0,
+        quantita: Number(r.quantita),
+        unita: r.unita || 'L',
+        prezzo_unitario: Number(r.prezzo_unitario) || 0,
+        costo_totale: Number(r.costo_totale),
+        fornitore: r.fornitore || null,
+        note: r.note || null,
+        user_id: session.user.id
+      });
+      if (error) { errors.push(`Errore inserimento rifornimento: ${r.data}`); continue; }
+      importedRifornimenti++;
+    }
+
+    for (const s of data.spese) {
+      if (!s.veicolo_nome || !s.data || s.importo == null) {
+        errors.push('Spesa incompleta, saltata'); continue;
+      }
+      const vid = veicoloNameToId[s.veicolo_nome];
+      if (!vid) {
+        const existingVid = veicoli.find(v => v.nome === s.veicolo_nome)?.id;
+        if (existingVid) {
+          veicoloNameToId[s.veicolo_nome] = existingVid;
+        } else {
+          errors.push(`Spesa per veicolo "${s.veicolo_nome}" non trovato, saltata`); continue;
+        }
+      }
+      const { error } = await supabase.from('spese').insert({
+        veicolo_id: veicoloNameToId[s.veicolo_nome],
+        data: s.data,
+        categoria: s.categoria || 'altro',
+        descrizione: s.descrizione || null,
+        importo: Number(s.importo),
+        odometro: s.odometro ? Number(s.odometro) : null,
+        note: s.note || null,
+        user_id: session.user.id
+      });
+      if (error) { errors.push(`Errore inserimento spesa: ${s.data}`); continue; }
+      importedSpese++;
+    }
+
+    setImportResult({ veicoli: importedVeicoli, rifornimenti: importedRifornimenti, spese: importedSpese, saltati: errors });
+    setImportConfirm(false);
+    setPendingBackup(null);
+    await loadData();
+  }
+
+  function cancelImport() {
+    setImportConfirm(false);
+    setImportPreview(null);
+    setPendingBackup(null);
+  }
+
   const dashboard = useMemo(() => calculateDashboard(veicoli, rifornimenti, spese), [veicoli, rifornimenti, spese]);
   const nomeVeicoloById = useMemo(() => Object.fromEntries(veicoli.map((v) => [v.id, v.nome])), [veicoli]);
   const reportData = useMemo(() => calculateReport(veicoli, rifornimenti, spese, nomeVeicoloById), [nomeVeicoloById, rifornimenti, spese, veicoli]);
@@ -414,6 +552,42 @@ const rifornimentiFiltrati = useMemo(() => {
               <button className="btn-secondary" onClick={exportSpese}>Esporta spese CSV</button>
               <button className="btn-primary" onClick={exportBackup}>Scarica backup JSON</button>
             </div>
+          </section>
+          <section className="panel-highlight p-5 space-y-4">
+            <h2 className="text-xl font-semibold">Ripristino dati</h2>
+            <div className="flex flex-wrap gap-3">
+              <label className="btn-secondary cursor-pointer">
+                <span>Ripristina da backup JSON</span>
+                <input type="file" accept=".json" className="hidden" onChange={handleBackupFile} />
+              </label>
+            </div>
+            {importPreview && importConfirm && (
+              <div className="space-y-2 border-t border-[var(--border)] pt-3">
+                <p className="text-sm font-medium">Anteprima backup:</p>
+                <p className="text-sm text-[var(--text-secondary)]">{importPreview.veicoli} veicoli, {importPreview.rifornimenti} rifornimenti, {importPreview.spese} spese</p>
+                <div className="flex gap-2">
+                  <button className="btn-primary text-sm" onClick={confirmImport}>Conferma ripristino</button>
+                  <button className="btn-secondary text-sm" onClick={cancelImport}>Annulla</button>
+                </div>
+              </div>
+            )}
+            {importResult && (
+              <div className="space-y-2 border-t border-[var(--border)] pt-3">
+                <p className="text-sm font-medium">Ripristino completato:</p>
+                <p className="text-sm text-[var(--text-secondary)]">{importResult.veicoli} veicoli importati</p>
+                <p className="text-sm text-[var(--text-secondary)]">{importResult.rifornimenti} rifornimenti importati</p>
+                <p className="text-sm text-[var(--text-secondary)]">{importResult.spese} spese importate</p>
+                {importResult.saltati.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-sm font-medium text-[var(--danger)]">Record saltati ({importResult.saltati.length}):</p>
+                    <ul className="text-xs text-[var(--text-secondary)] max-h-24 overflow-y-auto">
+                      {importResult.saltati.map((e, i) => <li key={i}>{e}</li>)}
+                    </ul>
+                  </div>
+                )}
+                <button className="btn-secondary text-sm" onClick={() => setImportResult(null)}>Chiudi</button>
+              </div>
+            )}
           </section>
         </>}
 
