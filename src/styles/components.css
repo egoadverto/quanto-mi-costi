@@ -73,7 +73,7 @@
 .app-input:focus {
   border-color: var(--accent);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(249, 168, 37, 0.25);
+  box-shadow: 0 0 0 2px rgba(34, 129, 154, 0.25);
 }
 
 .app-input::placeholder {
@@ -83,7 +83,7 @@
 /* Primary Button */
 .app-button-primary {
   background-color: var(--accent);
-  color: #012a45;
+  color: var(--on-primary);
   font-weight: 600;
   border-radius: var(--radius-full);
   padding: var(--space-sm) var(--space-lg);
@@ -124,7 +124,7 @@
 
 .app-nav-link-active {
   background-color: var(--accent);
-  color: #012a45;
+  color: var(--on-primary);
 }
 
 /* Panel / Card for lists */
@@ -147,13 +147,13 @@
 .field-default:focus {
   border-color: var(--accent);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(249, 168, 37, 0.25);
+  box-shadow: 0 0 0 2px rgba(34, 129, 154, 0.25);
 }
 
 /* Buttons */
 .btn-primary {
   background-color: var(--accent);
-  color: #012a45;
+  color: var(--on-primary);
   font-weight: 600;
   border-radius: var(--radius-full);
   padding: var(--space-sm) var(--space-md);
