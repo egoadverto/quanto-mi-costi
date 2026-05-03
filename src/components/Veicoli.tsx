@@ -51,9 +51,11 @@ function Veicoli({ veicoli, form, isEditing, showForm = true, showList = true, o
                     <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Data acquisto: {formatDate(v.data_acquisto)}</p>
                     <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Km all'acquisto: {v.odometro_iniziale ?? '-'}</p>
                   </div>
-                  <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold" onClick={() => void onDelete(v.id)}>Elimina</button>
+                  <div className="flex flex-col items-end gap-2">
+                    <button className="btn-secondary" onClick={() => onEdit(v.id)}>Modifica</button>
+                    <button className="app-button-danger rounded-xl px-3 py-2 text-sm font-semibold" onClick={() => void onDelete(v.id)}>Elimina</button>
+                  </div>
                 </div>
-                <button className="btn-secondary mt-2" onClick={() => onEdit(v.id)}>Modifica</button>
               </li>
             ))}
           </ul>
